@@ -19,9 +19,13 @@ from bs4 import BeautifulSoup
 import requests
 import urllib.request
 
+#Clint for download progress bar
+from clint.textui import progress
+
 
 
 def get_url(name):	#Method to get URL of Music Video from YouTube
+	print('\n')
 	array = list(str(name)) 
 	for i in range(0,len(str(name))):
 		if array[i]==' ':
@@ -45,7 +49,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	
 	return (url,str(title)) #Returns Name of Song and URL of Music Video
 
-def download_file(video_url,title):	#Method to download audio of Music Video
+def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 	driver = webdriver.PhantomJS()
 	driver.set_window_size(1280, 1024)
 	driver.get('https://www.youtube2mp3.cc/') #Third party website to convert to mp3
@@ -70,14 +74,32 @@ def download_file(video_url,title):	#Method to download audio of Music Video
 	if file=='':
 		print("ERROR")	#Checks whether download link is valid
 		exit()
-	urllib.request.urlretrieve(str(file),str(title)+'.mp3') #Downloads mp3 with the title as the name of file
+
 	driver.quit() #Closes PhantomJS
+	print('Downloading : ' + title +'\n')
+	return(file,title)
+
+
+def download(url,title):
+	r = requests.get(url,stream = True) #Gets download url 
+	title = title + '.mp3'
+	with open(title, 'wb') as f: #Opens .mp3 file with title as name
+		total_length = int(r.headers.get('content-length')) #Gets size of .mp3 file 
+		for chunk in progress.bar(r.iter_content(chunk_size = 1024), expected_size = (total_length/1024)+1): #Prints status bar
+			if chunk:
+				f.write(chunk) #Creates .mp3 file
+				f.flush()
+
+
 
 
 def main(): #Main method 
+	print('\n\n')
 	song_name = input('Enter Song Name : ') #Song Name as input or Keywords of Song
 	song_YT_URL,title = get_url(song_name) #Calls method get_url
-	download_file(song_YT_URL,title) #Downloads mp3
+	url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
+	download(url,title) #Saves as .mp3 file
+
 
 
 
