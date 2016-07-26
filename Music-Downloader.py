@@ -1,9 +1,9 @@
-#/Library/Frameworks/Python.framework/Versions/3.5/bin/python3
 
 
-''' To do : Progress bar to show download status '''
 
+''' To do : Add Album art'''
 
+import time
 
 #Selenium module
 from selenium import webdriver
@@ -17,15 +17,19 @@ from bs4 import BeautifulSoup
 
 #Requests and urllib
 import requests
-import urllib.request
+import urllib2
 
 #Clint for download progress bar
 from clint.textui import progress
 
+#Album Art
+from mutagen.mp3 import MP3
+from mutagen.id3 import ID3, APIC, error
 
 
 def get_url(name):	#Method to get URL of Music Video from YouTube
-	print('\n')
+
+	print '\n'
 	array = list(str(name)) 
 	for i in range(0,len(str(name))):
 		if array[i]==' ':
@@ -39,7 +43,6 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	driver.set_window_size(1280, 1024) #For error free PhantomJS
 	driver.get(name)					#Selenium object for search results
 	search_results = driver.page_source	#Gets search result's page source
-	search_results = str(search_results)
 	driver.quit() #Closes PhantomJS
 
 	soup = BeautifulSoup(search_results,"html.parser")	#Creates BeautifulSoup Object
@@ -49,7 +52,11 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	
 	return (url,str(title)) #Returns Name of Song and URL of Music Video
 
+
+
+
 def parse_Youtube(video_url,title):	#Method to download audio of Music Video
+
 	driver = webdriver.PhantomJS()
 	driver.set_window_size(1280, 1024)
 	driver.get('https://www.youtube2mp3.cc/') #Third party website to convert to mp3
@@ -65,7 +72,6 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 	) 	#Waits till Download link href loads in the HTML of the page 
 
 	url = driver.page_source	#Gets download page URL
-	url = str(url)
 	soup = BeautifulSoup(url,"html.parser")	#Converts to BeautifulSoup Object
 
 	for links in soup.findAll('a',{'id' : 'download'}):
@@ -76,11 +82,14 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 		exit()
 
 	driver.quit() #Closes PhantomJS
-	print('Downloading : ' + title +'\n')
+	print 'Downloading : ' + title +'\n'
 	return(file,title)
 
 
+
+
 def download(url,title):
+
 	r = requests.get(url,stream = True) #Gets download url 
 	title = title + '.mp3'
 	with open(title, 'wb') as f: #Opens .mp3 file with title as name
@@ -90,15 +99,55 @@ def download(url,title):
 				f.write(chunk) #Creates .mp3 file
 				f.flush()
 
+	
+
+def get_albumart(title):
+	url = "http://www.bing.com/images/search?q=" + title
+	url = requests.get(url)
+	url = url.text
+	soup = BeautifulSoup(url,"html.parser")
+
+	x = soup.find('img',{'height' : '170'}).get('src')
+	mp3file = urllib2.urlopen(x)
+	with open(title+'.png','wb') as output:
+  		output.write(mp3file.read())
 
 
+	return (title +'.png')
+		
+
+	
+	
+
+	
+
+def add_albumart(image,title):
+	audio = MP3(title,ID3=ID3)
+
+	try:
+		audio.add_tags()
+	except error:
+		pass
+
+	audio.tags.add(
+		APIC(
+			encoding=3,
+			mime='image/png',
+			type=3,
+			desc=u'Cover',
+			data=open(image).read()
+			)
+		)
+	audio.save()
 
 def main(): #Main method 
-	print('\n\n')
-	song_name = input('Enter Song Name : ') #Song Name as input or Keywords of Song
+	print '\n\n' 
+	song_name = raw_input('Enter Song Name : ') #Song Name as input or Keywords of Song
 	song_YT_URL,title = get_url(song_name) #Calls method get_url
 	url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
 	download(url,title) #Saves as .mp3 file
+	image = get_albumart(title)
+	add_albumart(image,title+'.mp3')
 
 
 
