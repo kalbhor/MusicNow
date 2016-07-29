@@ -1,10 +1,6 @@
 
 
-
-''' To do : Add Album art'''
-
-import time
-
+import os
 #Selenium module
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -102,7 +98,7 @@ def download(url,title):
 	
 
 def get_albumart(title):
-	url = "http://www.bing.com/images/search?q=" + title
+	url = "http://www.bing.com/images/search?q=" + title #Opens bing image results for album art
 	url = requests.get(url)
 	url = url.text
 	soup = BeautifulSoup(url,"html.parser")
@@ -121,7 +117,7 @@ def get_albumart(title):
 
 	
 
-def add_albumart(image,title):
+def add_albumart(image,title): #Adds album art using mutagen
 	audio = MP3(title,ID3=ID3)
 
 	try:
@@ -131,14 +127,15 @@ def add_albumart(image,title):
 
 	audio.tags.add(
 		APIC(
-			encoding=3,
+			encoding=3, #UTF-8
 			mime='image/png',
-			type=3,
+			type=3, # 3 is for album art
 			desc=u'Cover',
 			data=open(image).read()
 			)
 		)
 	audio.save()
+	os.remove(image) #Deletes image file once added as album art
 
 def main(): #Main method 
 	print '\n\n' 
@@ -148,6 +145,7 @@ def main(): #Main method
 	download(url,title) #Saves as .mp3 file
 	image = get_albumart(title)
 	add_albumart(image,title+'.mp3')
+
 
 
 
