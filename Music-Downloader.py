@@ -23,12 +23,25 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 
+def prompt(title):
+	print 'Download Song: %s  Y/N?' % str(title)
+	x = raw_input('>')
+	if x == 'Y' or x == 'y':
+		pass
+	elif x == 'N' or x == 'n':
+		exit()
+	else:
+		print 'Invalid input'
+		prompt(title)
+
+
+
 def get_url(name):	#Method to get URL of Music Video from YouTube
 
 	print '\n'
 	array = list(str(name)) 
 	for i in range(0,len(str(name))):
-		if array[i]==' ':
+		if array[i] ==' ':
 			array[i] = '+'
 	name = ''.join(array)
 	name = 'https://www.youtube.com/results?search_query=' + str(name)
@@ -45,7 +58,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	title = str(soup.find('a',{'class' : YT_Class}).get('title')) #Gets song name
 
 	url = 'https://www.youtube.com/' + str(soup.find('a',{'class' : YT_Class}).get('href')) #Gets Music Video URL
-	
+	prompt(title)
 	return (url,str(title)) #Returns Name of Song and URL of Music Video
 
 
@@ -78,14 +91,11 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 		exit()
 
 	driver.quit() #Closes PhantomJS
-	print 'Downloading : ' + title +'\n'
 	return(file,title)
 
 
-
-
 def download(url,title):
-
+	print 'Downloading ',
 	r = requests.get(url,stream = True) #Gets download url 
 	title = title + '.mp3'
 	with open(title, 'wb') as f: #Opens .mp3 file with title as name
@@ -111,10 +121,7 @@ def get_albumart(title):
 
 	return (title +'.png')
 		
-
 	
-	
-
 	
 
 def add_albumart(image,title): #Adds album art using mutagen
@@ -138,7 +145,7 @@ def add_albumart(image,title): #Adds album art using mutagen
 	os.remove(image) #Deletes image file once added as album art
 
 def main(): #Main method 
-	print '\n\n' 
+	os.system('clear')
 	song_name = raw_input('Enter Song Name : ') #Song Name as input or Keywords of Song
 	song_YT_URL,title = get_url(song_name) #Calls method get_url
 	url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
