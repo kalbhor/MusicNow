@@ -1,6 +1,7 @@
 
-
+from collections import OrderedDict
 import os
+import pprint
 #Selenium module
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -23,7 +24,10 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 
-def prompt(title):
+def prompt(url):
+	x = int(raw_input('Enter song number > '))
+	link = url.values()[x]
+	title = url.keys()[x]
 	print 'Download Song: %s  Y/N?' % str(title)
 	x = raw_input('>')
 	if x == 'Y' or x == 'y':
@@ -34,10 +38,15 @@ def prompt(title):
 		print 'Invalid input'
 		prompt(title)
 
+	print '\n'
+	print 'Downloading : ' + title +'\n' 
+	return str(title),str(link)
+
 
 
 def get_url(name):	#Method to get URL of Music Video from YouTube
-
+	url=OrderedDict()
+	num = 0
 	print '\n'
 	array = list(str(name)) 
 	for i in range(0,len(str(name))):
@@ -56,10 +65,16 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 
 	soup = BeautifulSoup(search_results,"html.parser")	#Creates BeautifulSoup Object
 	title = str(soup.find('a',{'class' : YT_Class}).get('title')) #Gets song name
+	for i in soup.findAll('a',{'class' : YT_Class}):
+		link = str('https://www.youtube.com/' + str(i.get('href')))
+		link_title = str(i.get('title'))
+		url.update({link_title:link})
+		print '['+str(num)+']' + link_title
+		num = num + 1
 
-	url = 'https://www.youtube.com/' + str(soup.find('a',{'class' : YT_Class}).get('href')) #Gets Music Video URL
-	prompt(title)
-	return (url,str(title)) #Returns Name of Song and URL of Music Video
+
+	title,url_fin = prompt(url)
+	return (url_fin,title) #Returns Name of Song and URL of Music Video
 
 
 
@@ -95,7 +110,6 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 
 
 def download(url,title):
-	print 'Downloading ',
 	r = requests.get(url,stream = True) #Gets download url 
 	title = title + '.mp3'
 	with open(title, 'wb') as f: #Opens .mp3 file with title as name
