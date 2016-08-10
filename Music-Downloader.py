@@ -1,7 +1,7 @@
-
+#Trivial modules
 from collections import OrderedDict
 import os
-import pprint
+
 #Selenium module
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -24,7 +24,16 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 
-def prompt(url):
+'''To do : 
+1. Use JSON for Album Art
+2. Handle exceptions,errors properly 
+3. Handle non unicode characters because artists today wanna be cool with their names'''
+
+
+
+'''Get song name and fetch Youtube URL'''
+
+def prompt(url): #Definition to prompt for song song from list of songs
 	x = int(raw_input('Enter song number > '))
 	link = url.values()[x]
 	title = url.keys()[x]
@@ -45,8 +54,8 @@ def prompt(url):
 
 
 def get_url(name):	#Method to get URL of Music Video from YouTube
-	url=OrderedDict()
-	num = 0
+	url = OrderedDict() #Create ordered Dictionary
+	num = 0			   #List of songs index
 	print '\n'
 	array = list(str(name)) 
 	for i in range(0,len(str(name))):
@@ -64,19 +73,23 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	driver.quit() #Closes PhantomJS
 
 	soup = BeautifulSoup(search_results,"html.parser")	#Creates BeautifulSoup Object
-	title = str(soup.find('a',{'class' : YT_Class}).get('title')) #Gets song name
-	for i in soup.findAll('a',{'class' : YT_Class}):
+
+	for i in soup.findAll('a',{'class' : YT_Class}): #In all Youtube Search Results
 		link = str('https://www.youtube.com/' + str(i.get('href')))
 		link_title = str(i.get('title'))
-		url.update({link_title:link})
-		print '['+str(num)+']' + link_title
+		url.update({link_title:link}) #Adds title and song url to dictionary
+		print '['+str(num)+']' + link_title #Prints list
 		num = num + 1
 
 
-	title,url_fin = prompt(url)
+	title,url_fin = prompt(url) #Gets the demanded song title and url
 	return (url_fin,title) #Returns Name of Song and URL of Music Video
 
 
+
+
+
+'''Parsing from Youtube2mp3.cc and get file and downloading file'''
 
 
 def parse_Youtube(video_url,title):	#Method to download audio of Music Video
@@ -109,7 +122,8 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 	return(file,title)
 
 
-def download(url,title):
+
+def download(url,title): #Downloads song
 	r = requests.get(url,stream = True) #Gets download url 
 	title = title + '.mp3'
 	with open(title, 'wb') as f: #Opens .mp3 file with title as name
@@ -119,9 +133,14 @@ def download(url,title):
 				f.write(chunk) #Creates .mp3 file
 				f.flush()
 
+
+
 	
 
-def get_albumart(title):
+'''Album Art Fetching and Adding '''
+
+
+def get_albumart(title): #Gets album art
 	url = "http://www.bing.com/images/search?q=" + title #Opens bing image results for album art
 	url = requests.get(url)
 	url = url.text
@@ -129,13 +148,11 @@ def get_albumart(title):
 
 	x = soup.find('img',{'height' : '170'}).get('src')
 	mp3file = urllib2.urlopen(x)
-	with open(title+'.png','wb') as output:
+	with open(title+'.png','wb') as output: #Saves album art
   		output.write(mp3file.read())
-
 
 	return (title +'.png')
 		
-	
 	
 
 def add_albumart(image,title): #Adds album art using mutagen
@@ -158,20 +175,22 @@ def add_albumart(image,title): #Adds album art using mutagen
 	audio.save()
 	os.remove(image) #Deletes image file once added as album art
 
-def main(): #Main method 
-	os.system('clear')
-	song_name = raw_input('Enter Song Name : ') #Song Name as input or Keywords of Song
-	song_YT_URL,title = get_url(song_name) #Calls method get_url
-	url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
-	download(url,title) #Saves as .mp3 file
-	image = get_albumart(title)
-	add_albumart(image,title+'.mp3')
 
 
 
+'''Main Method'''
 
+os.system('clear') #Clears terminal window
 
-main() #Calls main method
+song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
+song_YT_URL,title = get_url(song_name) #Calls method to get YT url
+
+url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
+download(url,title) #Saves as .mp3 file
+
+image = get_albumart(title) #Gets album art
+add_albumart(image,title+'.mp3') #Adds album art to song
+
 
 
 
