@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #Trivial modules
 from collections import OrderedDict
 import os
@@ -27,7 +29,7 @@ from mutagen.id3 import ID3, APIC, error
 '''To do : 
 1. Use JSON for Album Art
 2. Handle exceptions,errors properly 
-3. Handle non unicode characters because artists today wanna be cool with their names'''
+'''
 
 
 
@@ -37,7 +39,7 @@ def prompt(url): #Definition to prompt for song song from list of songs
 	x = int(raw_input('Enter song number > '))
 	link = url.values()[x]
 	title = url.keys()[x]
-	print 'Download Song: %s  Y/N?' % str(title)
+	print 'Download Song: %s  Y/N?' % title
 	x = raw_input('>')
 	if x == 'Y' or x == 'y':
 		pass
@@ -45,11 +47,11 @@ def prompt(url): #Definition to prompt for song song from list of songs
 		exit()
 	else:
 		print 'Invalid input'
-		prompt(title)
+		exit()
 
 	print '\n'
 	print 'Downloading : ' + title +'\n' 
-	return str(title),str(link)
+	return title,link
 
 
 
@@ -75,8 +77,8 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	soup = BeautifulSoup(search_results,"html.parser")	#Creates BeautifulSoup Object
 
 	for i in soup.findAll('a',{'class' : YT_Class}): #In all Youtube Search Results
-		link = str('https://www.youtube.com/' + str(i.get('href')))
-		link_title = str(i.get('title'))
+		link = 'https://www.youtube.com/' + str(i.get('href')).encode('utf-8')
+		link_title = (i.get('title')).encode('utf-8')
 		url.update({link_title:link}) #Adds title and song url to dictionary
 		print '['+str(num)+']' + link_title #Prints list
 		num = num + 1
@@ -92,7 +94,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 '''Parsing from Youtube2mp3.cc and get file and downloading file'''
 
 
-def parse_Youtube(video_url,title):	#Method to download audio of Music Video
+def parse_Youtube(video_url):	#Method to download audio of Music Video
 
 	driver = webdriver.PhantomJS()
 	driver.set_window_size(1280, 1024)
@@ -119,7 +121,7 @@ def parse_Youtube(video_url,title):	#Method to download audio of Music Video
 		exit()
 
 	driver.quit() #Closes PhantomJS
-	return(file,title)
+	return(file)
 
 
 
@@ -185,7 +187,7 @@ os.system('clear') #Clears terminal window
 song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
 song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 
-url,title = parse_Youtube(song_YT_URL,title) #Gets download url and song title
+url = parse_Youtube(song_YT_URL) #Gets download url and song title
 download(url,title) #Saves as .mp3 file
 
 image = get_albumart(title) #Gets album art
