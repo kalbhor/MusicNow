@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 
 #Trivial modules
 from collections import OrderedDict
@@ -39,6 +39,7 @@ def prompt(url): #Definition to prompt for song song from list of songs
 	x = int(raw_input('Enter song number > '))
 	link = url.values()[x]
 	title = url.keys()[x]
+	os.system('clear')
 	print 'Download Song: %s  Y/N?' % title
 	x = raw_input('>')
 	if x == 'Y' or x == 'y':
@@ -52,6 +53,7 @@ def prompt(url): #Definition to prompt for song song from list of songs
 	print '\n'
 	print 'Downloading : ' + title +'\n' 
 	return title,link
+
 
 
 
@@ -80,7 +82,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 		link = 'https://www.youtube.com/' + str(i.get('href')).encode('utf-8')
 		link_title = (i.get('title')).encode('utf-8')
 		url.update({link_title:link}) #Adds title and song url to dictionary
-		print '['+str(num)+']' + link_title #Prints list
+		print '['+str(num)+'] ' + link_title #Prints list
 		num = num + 1
 
 
@@ -143,6 +145,7 @@ def download(url,title): #Downloads song
 
 
 def get_albumart(title): #Gets album art
+	print "\nFetching Album Art.."
 	url = "http://www.bing.com/images/search?q=" + title #Opens bing image results for album art
 	url = requests.get(url)
 	url = url.text
@@ -192,6 +195,7 @@ download(url,title) #Saves as .mp3 file
 
 image = get_albumart(title) #Gets album art
 add_albumart(image,title+'.mp3') #Adds album art to song
+os.system('clear')
 
 
 
