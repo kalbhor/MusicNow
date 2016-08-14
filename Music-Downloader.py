@@ -191,10 +191,10 @@ def add_albumart(image,title): #Adds album art using mutagen
 	os.remove(image) #Deletes image file once added as album art
 
 
-def text_message(url):
+def text_message(url,title):
 	txt = open("twilio_details.txt",'r') #Reads from twilio_details file
 	x = txt.read().splitlines()
-	
+	message = "URL for : " + str(title) + " : " + str(url)
 
 
 
@@ -202,7 +202,7 @@ def text_message(url):
 	client  = TwilioRestClient(x[0], x[1]) 
 
 	message = client.messages.create(to=x[2], from_=x[3], #Sends text message
-                                 body=str(url))
+                                 body=message)
 
 
 
@@ -216,7 +216,7 @@ song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 url = parse_Youtube(song_YT_URL) #Gets download url and song title
 
 if twilio == 'Y' or twilio =='y':
-	text_message(url) #Sends text message to mobile phone
+	text_message(url,title) #Sends text message to mobile phone
 
 download(url,title) #Saves as .mp3 file
 
