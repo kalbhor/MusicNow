@@ -30,6 +30,13 @@ from mutagen.id3 import ID3, APIC, error
 from twilio.rest import TwilioRestClient
 
 
+
+
+script , twilio = argv #Asks whether user wants twilio functions 
+
+
+
+
 '''To do : 
 1. Use JSON for Album Art
 2. Handle exceptions,errors properly 
@@ -55,8 +62,6 @@ def prompt(url): #Definition to prompt for song song from list of songs
 		print 'Invalid input'
 		exit()
 
-	print '\n'
-	print 'Downloading : ' + title +'\n' 
 	return title,link
 
 
@@ -187,12 +192,16 @@ def add_albumart(image,title): #Adds album art using mutagen
 
 
 def text_message(url):
-	print "Sending download url to mobile phone.."
-	account = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-	token   = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-	client  = TwilioRestClient(account, token)
+	txt = open("twilio_details.txt",'r') #Reads from twilio_details file
+	x = txt.read().splitlines()
+	
 
-	message = client.messages.create(to="Your number", from_="Your twilio number",
+
+
+	print "Sending download url to mobile phone.."
+	client  = TwilioRestClient(x[0], x[1]) 
+
+	message = client.messages.create(to=x[2], from_=x[3], #Sends text message
                                  body=str(url))
 
 
@@ -206,7 +215,8 @@ song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 
 url = parse_Youtube(song_YT_URL) #Gets download url and song title
 
-text_message(url) #Sends text message to mobile phone
+if twilio == 'Y' or twilio =='y':
+	text_message(url) #Sends text message to mobile phone
 
 download(url,title) #Saves as .mp3 file
 
