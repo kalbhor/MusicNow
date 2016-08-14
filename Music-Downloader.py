@@ -3,6 +3,7 @@
 #Trivial modules
 from collections import OrderedDict
 import os
+from sys import argv
 
 #Selenium module
 from selenium import webdriver
@@ -25,6 +26,9 @@ from clint.textui import progress
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
+#Twilio Text message
+from twilio.rest import TwilioRestClient
+
 
 '''To do : 
 1. Use JSON for Album Art
@@ -34,6 +38,7 @@ from mutagen.id3 import ID3, APIC, error
 
 
 '''Get song name and fetch Youtube URL'''
+
 
 def prompt(url): #Definition to prompt for song song from list of songs
 	x = int(raw_input('Enter song number > '))
@@ -181,6 +186,15 @@ def add_albumart(image,title): #Adds album art using mutagen
 	os.remove(image) #Deletes image file once added as album art
 
 
+def text_message(url):
+	print "Sending download url to mobile phone.."
+	account = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+	token   = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+	client  = TwilioRestClient(account, token)
+
+	message = client.messages.create(to="Your number", from_="Your twilio number",
+                                 body=str(url))
+
 
 
 '''Main Method'''
@@ -191,12 +205,15 @@ song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keyw
 song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 
 url = parse_Youtube(song_YT_URL) #Gets download url and song title
+
+text_message(url) #Sends text message to mobile phone
+
 download(url,title) #Saves as .mp3 file
 
 image = get_albumart(title) #Gets album art
 add_albumart(image,title+'.mp3') #Adds album art to song
-os.system('clear')
 
+os.system('clear')
 
 
 
