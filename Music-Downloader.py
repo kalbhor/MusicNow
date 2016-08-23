@@ -1,16 +1,11 @@
 #!/usr/bin/python
-
+from __future__ import unicode_literals
+import youtube_dl
 #Trivial modules
 from collections import OrderedDict
 import os
 from sys import argv
 
-#Selenium module
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 
 #BeautifulSoup module
 from bs4 import BeautifulSoup
@@ -27,12 +22,11 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 #Twilio Text message
-from twilio.rest import TwilioRestClient
 
 
 
 
-script , twilio = argv #Asks whether user wants twilio functions 
+
 
 
 
@@ -40,6 +34,8 @@ script , twilio = argv #Asks whether user wants twilio functions
 '''To do : 
 1. Use JSON for Album Art
 2. Handle exceptions,errors properly 
+3. Read song names from file
+4. Abandon Selenium
 '''
 
 
@@ -68,7 +64,7 @@ def prompt(url): #Definition to prompt for song song from list of songs
 
 
 def get_url(name):	#Method to get URL of Music Video from YouTube
-	url = OrderedDict() #Create ordered Dictionary
+	urls_list = OrderedDict() #Create ordered Dictionary
 	num = 0			   #List of songs index
 	print '\n'
 	array = list(str(name)) 
@@ -77,75 +73,45 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 			array[i] = '+'
 	name = ''.join(array)
 	name = 'https://www.youtube.com/results?search_query=' + str(name)
+	html = requests.get(name)
+	soup = BeautifulSoup(html.text,'html.parser')
+
+	
+	
 
 	YT_Class = 'yt-uix-sessionlink yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2       spf-link '	#YouTube Class holding video
 
-	driver = webdriver.PhantomJS() #Headless browser
-	driver.set_window_size(1280, 1024) #For error free PhantomJS
-	driver.get(name)					#Selenium object for search results
-	search_results = driver.page_source	#Gets search result's page source
-	driver.quit() #Closes PhantomJS
-
-	soup = BeautifulSoup(search_results,"html.parser")	#Creates BeautifulSoup Object
-
 	for i in soup.findAll('a',{'class' : YT_Class}): #In all Youtube Search Results
-		link = 'https://www.youtube.com/' + str(i.get('href')).encode('utf-8')
+		link = 'https://www.youtube.com' + str(i.get('href')).encode('utf-8')
 		link_title = (i.get('title')).encode('utf-8')
-		url.update({link_title:link}) #Adds title and song url to dictionary
-		print '['+str(num)+'] ' + link_title #Prints list
+		urls_list.update({link_title:link}) #Adds title and song url to dictionary
+		print '['+str(num)+'] ' + link_title + ' : ' + link #Prints list
 		num = num + 1
 
 
-	title,url_fin = prompt(url) #Gets the demanded song title and url
-	return (url_fin,title) #Returns Name of Song and URL of Music Video
+	title,url = prompt(urls_list) #Gets the demanded song title and url
+	return (url,title) #Returns Name of Song and URL of Music Video
+
+
+
+def download(url):
+	ydl_opts = {
+		'format': 'bestaudio/best',
+		'postprocessors': [{
+			'key' : 'FFmpegExtractAudio',
+			'preferredcodec': 'mp3',
+			'preferredquality': '192',
+		}],
+	}
+
+	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+		ydl.download([str(url)])
 
 
 
 
 
-'''Parsing from Youtube2mp3.cc and get file and downloading file'''
 
-
-def parse_Youtube(video_url):	#Method to download audio of Music Video
-
-	driver = webdriver.PhantomJS()
-	driver.set_window_size(1280, 1024)
-	driver.get('https://www.youtube2mp3.cc/') #Third party website to convert to mp3
-
-	vid_name = driver.find_element_by_id('input') 
-	vid_name.send_keys(str(video_url))
-	driver.find_element_by_id('button').click()
-
-
-	
-	element = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, './/a[@id="download" and @href!=""]'))
-	) 	#Waits till Download link href loads in the HTML of the page 
-
-	url = driver.page_source	#Gets download page URL
-	soup = BeautifulSoup(url,"html.parser")	#Converts to BeautifulSoup Object
-
-	for links in soup.findAll('a',{'id' : 'download'}):
-		file = links.get('href')
-		break	#Gets the download link href
-	if file=='':
-		print("ERROR")	#Checks whether download link is valid
-		exit()
-
-	driver.quit() #Closes PhantomJS
-	return(file)
-
-
-
-def download(url,title): #Downloads song
-	r = requests.get(url,stream = True) #Gets download url 
-	title = title + '.mp3'
-	with open(title, 'wb') as f: #Opens .mp3 file with title as name
-		total_length = int(r.headers.get('content-length')) #Gets size of .mp3 file 
-		for chunk in progress.bar(r.iter_content(chunk_size = 1024), expected_size = (total_length/1024)+1): #Prints status bar
-			if chunk:
-				f.write(chunk) #Creates .mp3 file
-				f.flush()
 
 
 
@@ -191,18 +157,6 @@ def add_albumart(image,title): #Adds album art using mutagen
 	os.remove(image) #Deletes image file once added as album art
 
 
-def text_message(url,title):
-	txt = open("twilio_details.txt",'r') #Reads from twilio_details file
-	x = txt.read().splitlines()
-	message = "URL for : " + str(title) + " : " + str(url)
-
-
-
-	print "Sending download url to mobile phone.."
-	client  = TwilioRestClient(x[0], x[1]) 
-
-	message = client.messages.create(to=x[2], from_=x[3], #Sends text message
-                                 body=message)
 
 
 
@@ -213,12 +167,8 @@ os.system('clear') #Clears terminal window
 song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
 song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 
-url = parse_Youtube(song_YT_URL) #Gets download url and song title
 
-if twilio == 'Y' or twilio =='y':
-	text_message(url,title) #Sends text message to mobile phone
-
-download(url,title) #Saves as .mp3 file
+download(song_YT_URL) #Saves as .mp3 file
 
 image = get_albumart(title) #Gets album art
 add_albumart(image,title+'.mp3') #Adds album art to song

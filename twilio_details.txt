@@ -1,4 +1,0 @@
-<Account number>
-<Token>
-<Your mobile number. eg : +(country code)(your number) >
-<Your twilio number. eg : +(twilio number) >
