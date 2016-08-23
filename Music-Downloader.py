@@ -33,9 +33,7 @@ from mutagen.id3 import ID3, APIC, error
 
 '''To do : 
 1. Use JSON for Album Art
-2. Handle exceptions,errors properly 
-3. Read song names from file
-4. Abandon Selenium
+2. Read song names from file
 '''
 
 
@@ -85,7 +83,10 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 		link = 'https://www.youtube.com' + str(i.get('href')).encode('utf-8')
 		link_title = (i.get('title')).encode('utf-8')
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
-		print '['+str(num)+'] ' + link_title + ' : ' + link #Prints list
+		try:
+			print '['+str(num)+'] ' + link_title #Prints list
+		except UnicodeDecodeError: 
+			pass
 		num = num + 1
 
 
@@ -94,7 +95,9 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 
 
 
-def download(url):
+def download(url,title):
+	initial_title = title+'-'+url[32:]+'.mp3'
+	print initial_title
 	ydl_opts = {
 		'format': 'bestaudio/best',
 		'postprocessors': [{
@@ -106,6 +109,13 @@ def download(url):
 
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 		ydl.download([str(url)])
+
+	try:	
+		os.rename(initial_title,title+'.mp3')
+	except error:
+		pass
+
+
 
 
 
@@ -137,7 +147,11 @@ def get_albumart(title): #Gets album art
 	
 
 def add_albumart(image,title): #Adds album art using mutagen
-	audio = MP3(title,ID3=ID3)
+	try:
+		audio = MP3(title,ID3=ID3)
+	except error:
+		print "Could not add Album Art"
+		pass
 
 	try:
 		audio.add_tags()
@@ -168,7 +182,7 @@ song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keyw
 song_YT_URL,title = get_url(song_name) #Calls method to get YT url
 
 
-download(song_YT_URL) #Saves as .mp3 file
+download(song_YT_URL,title) #Saves as .mp3 file
 
 image = get_albumart(title) #Gets album art
 add_albumart(image,title+'.mp3') #Adds album art to song
