@@ -1,29 +1,22 @@
-#!/usr/bin/python
 from __future__ import unicode_literals
 import youtube_dl
-#Trivial modules
+
+
 from collections import OrderedDict
 import os
 from sys import argv
 
 
-#BeautifulSoup module
 from bs4 import BeautifulSoup
 
-#Requests and urllib
+
 import requests
 import urllib2
 
-#Clint for download progress bar
-from clint.textui import progress
 
-#Album Art
+
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
-
-#Twilio Text message
-
-
 
 
 
@@ -33,15 +26,18 @@ from mutagen.id3 import ID3, APIC, error
 
 '''To do : 
 1. Use JSON for Album Art
-2. Read song names from file
+2. Error testing
 '''
 
 
 
-'''Get song name and fetch Youtube URL'''
 
 
-def prompt(url): #Definition to prompt for song song from list of songs
+script,mode = argv
+
+
+
+def prompt(url): #Definition to prompt for song number from list of songs
 	x = int(raw_input('Enter song number > '))
 	link = url.values()[x]
 	title = url.keys()[x]
@@ -69,7 +65,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 	for i in range(0,len(str(name))):
 		if array[i] ==' ':
 			array[i] = '+'
-	name = ''.join(array)
+	name = ''.join(array).encode('utf-8')
 	name = 'https://www.youtube.com/results?search_query=' + str(name)
 	html = requests.get(name)
 	soup = BeautifulSoup(html.text,'html.parser')
@@ -83,14 +79,18 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 		link = 'https://www.youtube.com' + str(i.get('href')).encode('utf-8')
 		link_title = (i.get('title')).encode('utf-8')
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
-		try:
-			print '['+str(num)+'] ' + link_title #Prints list
-		except UnicodeDecodeError: 
-			pass
-		num = num + 1
 
+		if mode == 'S': #Display list for single song mode
+			try:
+				print '['+str(num)+'] ' + link_title #Prints list
+			except UnicodeDecodeError: 
+				pass
+			num = num + 1
 
-	title,url = prompt(urls_list) #Gets the demanded song title and url
+		elif mode == 'M': #For multiple song mode, return the first result
+			return (urls_list.values()[0], urls_list.keys()[0])
+
+	title,url = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
 	return (url,title) #Returns Name of Song and URL of Music Video
 
 
@@ -108,19 +108,12 @@ def download(url,title):
 	}
 
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-		ydl.download([str(url)])
+		ydl.download([str(url)]) #Downloads audio using youtube-dl
 
 	try:	
-		os.rename(initial_title,title+'.mp3')
-	except error:
+		os.rename(initial_title,title+'.mp3') #Renames file to song title
+	except OSError:
 		pass
-
-
-
-
-
-
-
 
 
 
@@ -178,16 +171,37 @@ def add_albumart(image,title): #Adds album art using mutagen
 
 os.system('clear') #Clears terminal window
 
-song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
-song_YT_URL,title = get_url(song_name) #Calls method to get YT url
+
+if mode == 'S' or mode =='s':
+	song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
+	song_YT_URL,title = get_url(song_name) #Gets YT url
 
 
-download(song_YT_URL,title) #Saves as .mp3 file
+	download(song_YT_URL,title) #Saves as .mp3 file
 
-image = get_albumart(title) #Gets album art
-add_albumart(image,title+'.mp3') #Adds album art to song
+	image = get_albumart(title) #Gets album art
+	add_albumart(image,title+'.mp3') #Adds album art to song
 
-os.system('clear')
+elif mode == 'M' or mode == 'm':
+	file = raw_input('Enter file location > ') 
+
+	with open(str(file)) as f:
+		content = f.readlines() #stores each song line by line
+	
+	for song_names in content: #iterates over each song name
+
+		song_YT_URL,title = get_url(song_names) #Gets YT url
+
+		download(song_YT_URL,title) #Downloads song
+
+		image = get_albumart(title) #Gets album art
+		add_albumart(image,title+'.mp3') #Adds album art
+
+else:
+	print('Error. Invalid mode.')
+
+
+
 
 
 
