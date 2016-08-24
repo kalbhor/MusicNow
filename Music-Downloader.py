@@ -84,7 +84,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 			try:
 				print '['+str(num)+'] ' + link_title #Prints list
 			except UnicodeDecodeError: 
-				pass
+				pas
 			num = num + 1
 
 		elif mode == 'M': #For multiple song mode, return the first result
@@ -191,6 +191,7 @@ elif mode == 'M' or mode == 'm':
 	for song_names in content: #iterates over each song name
 
 		song_YT_URL,title = get_url(song_names) #Gets YT url
+		title = unicode(title,"utf-8")
 
 		download(song_YT_URL,title) #Downloads song
 
