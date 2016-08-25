@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 
 import requests
 import urllib2
+import json
 
 
 
@@ -23,10 +24,8 @@ from mutagen.id3 import ID3, APIC, error
 
 
 
-
 '''To do : 
-1. Use JSON for Album Art
-2. Error testing
+1. Bug testing
 '''
 
 
@@ -35,6 +34,8 @@ from mutagen.id3 import ID3, APIC, error
 
 script,mode = argv
 
+def get_soup(url,header):
+    return BeautifulSoup(urllib2.urlopen(urllib2.Request(url,headers=header)),"html.parser")
 
 
 def prompt(url): #Definition to prompt for song number from list of songs
@@ -84,7 +85,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 			try:
 				print '['+str(num)+'] ' + link_title #Prints list
 			except UnicodeDecodeError: 
-				pas
+				pass
 			num = num + 1
 
 		elif mode == 'M': #For multiple song mode, return the first result
@@ -123,27 +124,31 @@ def download(url,title):
 '''Album Art Fetching and Adding '''
 
 
-def get_albumart(title): #Gets album art
+def get_albumart(query): 
 	print "\nFetching Album Art.."
-	url = "http://www.bing.com/images/search?q=" + title #Opens bing image results for album art
-	url = requests.get(url)
-	url = url.text
-	soup = BeautifulSoup(url,"html.parser")
+	query = query.split()
+	query ='+'.join(query)
+	url="https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch"
 
-	x = soup.find('img',{'height' : '170'}).get('src')
-	mp3file = urllib2.urlopen(x)
-	with open(title+'.png','wb') as output: #Saves album art
-  		output.write(mp3file.read())
+	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
+	}
+	soup = get_soup(url,header)
 
-	return (title +'.png')
+
+
+	a = soup.find("div",{"class":"rg_meta"})
+	link =json.loads(a.text)["ou"]
+
+	return (link)
 		
 	
 
 def add_albumart(image,title): #Adds album art using mutagen
+	response = urllib2.urlopen(image)
 	try:
 		audio = MP3(title,ID3=ID3)
-	except error:
-		print "Could not add Album Art"
+	except error as e:
+		print "Could not add Album Art : " + str(e)
 		pass
 
 	try:
@@ -157,11 +162,11 @@ def add_albumart(image,title): #Adds album art using mutagen
 			mime='image/png',
 			type=3, # 3 is for album art
 			desc=u'Cover',
-			data=open(image).read()
+			data=response.read()
 			)
 		)
 	audio.save()
-	os.remove(image) #Deletes image file once added as album art
+
 
 
 
@@ -195,7 +200,7 @@ elif mode == 'M' or mode == 'm':
 
 		download(song_YT_URL,title) #Downloads song
 
-		image = get_albumart(title) #Gets album art
+		image = get_albumart(title+' Album Art') #Gets album art
 		add_albumart(image,title+'.mp3') #Adds album art
 
 else:
