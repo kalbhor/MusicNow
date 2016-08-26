@@ -1,46 +1,27 @@
-from __future__ import unicode_literals
-import youtube_dl
 
-
-
-
-from collections import OrderedDict
 import os
 from sys import argv
+from collections import OrderedDict
 
 
 from bs4 import BeautifulSoup
-
-
 import requests
 import urllib2
 import json
 
-
-
+import youtube_dl
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
+script,mode = argv
 
-
-
-
-
-'''To do : 
-1. Bug testing
+''' To do : 
+		1. Testing 
 '''
 
 
-
-
-
-script,mode = argv
-
-
-
-
-def prompt(url): #Definition to prompt for song number from list of songs
-	x = int(raw_input('Enter song number > '))
+def prompt(url): 
+	x = int(raw_input('\nEnter song number > '))
 	link = url.values()[x]
 	title = url.keys()[x]
 	os.system('clear')
@@ -60,9 +41,8 @@ def prompt(url): #Definition to prompt for song number from list of songs
 
 
 
-
-def get_url(name):	#Method to get URL of Music Video from YouTube
-	urls_list = OrderedDict() #Create ordered Dictionary
+def get_url(name):	
+	urls_list = OrderedDict()
 	num = 0			   #List of songs index
 	print '\n'
 	array = list(name)
@@ -84,15 +64,13 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 		link_title = (i.get('title')).encode('utf-8')
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
 
-		if mode == 'S': #Display list for single song mode
-			#try:
-			print '['+str(num)+'] ', #Prints list
+		if mode == 'S' or mode == 's': #Display list for single song mode
+			print '#'+str(num)+' ', #Prints list
 			print link_title
-			#except UnicodeDecodeError: 
-			#	pass
+
 			num = num + 1
 
-		elif mode == 'M': #For multiple song mode, return the first result
+		elif mode == 'M' or mode == 'm': #For multiple song mode, return the first result
 			return (urls_list.values()[0], urls_list.keys()[0])
 
 	title,url = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
@@ -101,7 +79,7 @@ def get_url(name):	#Method to get URL of Music Video from YouTube
 
 
 
-def download(url,title):
+def download(url, title):
 	title = title.decode('utf-8')
 	initial_title = (title+'-'+url[32:]+'.mp3').encode('utf-8')
 	print initial_title
@@ -120,17 +98,9 @@ def download(url,title):
 	try:	
 		os.rename(initial_title,title+'.mp3') #Renames file to song title
 	except OSError:
-		pass
+		print "An error occured :( \n"
 
 
-
-
-	
-
-'''Album Art Fetching and Adding '''
-
-def get_soup(url,header):
-    return BeautifulSoup(urllib2.urlopen(urllib2.Request(url,headers=header)),"html.parser")
 
 def get_albumart(query): 
 	print "\nFetching Album Art.."
@@ -139,25 +109,25 @@ def get_albumart(query):
 	query = query.split()
 	query ='+'.join(query)
 	
-	url=("https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch").encode('utf-8')
-	print url
+	url = ("https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch").encode('utf-8')
+	
 
-	header={'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
+	header = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
 	}
 	url = url.decode('ascii','ignore')
-	soup = get_soup(url,header)
 
-
+	soup = BeautifulSoup(urllib2.urlopen(urllib2.Request(url,headers=header)),"html.parser")
+	
 
 	a = soup.find("div",{"class":"rg_meta"})
-	link =json.loads(a.text)["ou"]
+	link = json.loads(a.text)["ou"]
 
-	return (link)
+	return link
 		
 	
 
-def add_albumart(image,title): #Adds album art using mutagen
-	response = urllib2.urlopen(image)
+def add_albumart(image, title): 
+	response = urllib2.urlopen(image) #Gets album art from url
 	try:
 		audio = MP3(title,ID3=ID3)
 	except error as e:
@@ -175,7 +145,7 @@ def add_albumart(image,title): #Adds album art using mutagen
 			mime='image/png',
 			type=3, # 3 is for album art
 			desc=u'Cover',
-			data=response.read()
+			data=response.read() #Reads and adds album art
 			)
 		)
 	audio.save()
@@ -187,11 +157,11 @@ def add_albumart(image,title): #Adds album art using mutagen
 
 '''Main Method'''
 
-os.system('clear') #Clears terminal window
+os.system('clear') 
 
 
 if mode == 'S' or mode =='s':
-	song_name = raw_input('Enter Song Name/Keywords : ') #Song Name as input or Keywords of Song
+	song_name = raw_input('Enter Song Name/Keywords : ')
 	song_YT_URL,title = get_url(song_name) #Gets YT url
 
 	download(song_YT_URL,title) #Saves as .mp3 file
@@ -206,7 +176,7 @@ elif mode == 'M' or mode == 'm':
 	file = raw_input('Enter file location > ') 
 
 	with open(file) as f:
-		content = f.readlines() #stores each song line by line
+		content = f.readlines() #Stores each song line by line
 	
 	for song_names in content: #iterates over each song name
 		song_names = song_names.decode('utf-8')
@@ -215,11 +185,11 @@ elif mode == 'M' or mode == 'm':
 
 		download(song_YT_URL,title) #Downloads song
 
-		image = get_albumart(title) #Gets album art
+		image = get_albumart(title) #Gets album art url
 		title = title.decode('utf-8')
 		title = title + '.mp3'
 		title = title.encode('utf-8')
 		add_albumart(image,title) #Adds album art
 
 else:
-	print('Error. Invalid mode.')
+	print('Error. Invalid mode.') #If mode is not 'S/s' or 'M/m'
