@@ -1,8 +1,7 @@
-
+# -*- coding: utf-8 -*-
 import os
 from sys import argv
 from collections import OrderedDict
-
 
 from bs4 import BeautifulSoup
 import requests
@@ -19,9 +18,9 @@ script,mode = argv
 		1. Testing 
 '''
 
-
 def prompt(url): 
 	x = int(raw_input('\nEnter song number > '))
+	x = x - 1
 	link = url.values()[x]
 	title = url.keys()[x]
 	os.system('clear')
@@ -39,8 +38,6 @@ def prompt(url):
 
 	return title,link
 
-
-
 def get_url(name):	
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
@@ -53,10 +50,7 @@ def get_url(name):
 	name = 'https://www.youtube.com/results?search_query=' + name
 	html = requests.get(name)
 	soup = BeautifulSoup(html.text,'html.parser')
-
-	
-	
-
+		
 	YT_Class = 'yt-uix-sessionlink yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2       spf-link '	#YouTube Class holding video
 
 	for i in soup.findAll('a',{'class' : YT_Class}): #In all Youtube Search Results
@@ -65,7 +59,7 @@ def get_url(name):
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
 
 		if mode == 'S' or mode == 's': #Display list for single song mode
-			print '#'+str(num)+' ', #Prints list
+			print '#'+str(num+1)+' ', #Prints list
 			print link_title
 
 			num = num + 1
@@ -76,8 +70,6 @@ def get_url(name):
 	title,url = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
 
 	return (url,title) #Returns Name of Song and URL of Music Video
-
-
 
 def download(url, title):
 	title = title.decode('utf-8')
@@ -97,10 +89,9 @@ def download(url, title):
 
 	try:	
 		os.rename(initial_title,title+'.mp3') #Renames file to song title
-	except OSError:
-		print "An error occured :( \n"
-
-
+	except Exception:
+		print "Could not rename the file."
+		exit()
 
 def get_albumart(query): 
 	print "\nFetching Album Art.."
@@ -123,20 +114,18 @@ def get_albumart(query):
 	link = json.loads(a.text)["ou"]
 
 	return link
-		
-	
 
 def add_albumart(image, title): 
 	response = urllib2.urlopen(image) #Gets album art from url
 	try:
 		audio = MP3(title,ID3=ID3)
-	except error as e:
-		print "Could not add Album Art : " + str(e)
-		pass
+	except Exception:
+		print "An Error occured while adding the album art "
+		exit()
 
 	try:
 		audio.add_tags()
-	except error:
+	except Exception:
 		pass
 
 	audio.tags.add(
@@ -149,9 +138,6 @@ def add_albumart(image, title):
 			)
 		)
 	audio.save()
-
-
-
 
 
 
