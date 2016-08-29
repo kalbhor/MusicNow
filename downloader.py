@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+
 import os
 from sys import argv
 from collections import OrderedDict
@@ -9,14 +11,88 @@ import urllib2
 import json
 
 import youtube_dl
+
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, error
+from mutagen.id3 import ID3NoHeaderError
+from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC, APIC, error
 
 script,mode = argv
 
 ''' To do : 
 		1. Testing 
+		2. Handle Unicode 
+		3. Check VA for album artists
+		4. Clean up code (variable names and comments)
 '''
+
+def get_albumname(name):
+	title = name
+
+	array = list(title)
+	for i in range(0,len(title)):
+		if array[i] ==' ':
+			array[i] = '+'
+	title = ''.join(array)
+
+	title = "http://search.letssingit.com/cgi-exe/am.cgi?a=search&artist_id=&l=archive&s=" + title
+	print title
+	title = requests.get(title)
+	soup = BeautifulSoup(title.text,"html.parser")
+	link = soup.find('a',{'class' : 'high_profile'})
+	try:
+		link = link.get('href')
+	except Exception:
+		print "Could not find album name"
+		title = name
+		album = name
+		artist = name
+		return artist,album,title
+
+	link = requests.get(link)
+
+	soup = BeautifulSoup(link.text,"html.parser")
+
+	
+	divi_al = soup.find('div',{'id' : 'albums'})
+	divi_title = soup.find('div',{'id':'content_artist'}).find('h1')
+
+	try:
+		title = divi_title.contents[0]
+		title = title[1:-8]
+	except Exception:
+		print "Couldn't reset title"
+		title = name
+		album = name
+		artist = name
+		return artist,album,title 
+		
+
+
+	try:
+		artist = divi_title.contents[1].getText()
+	except Exception:
+		"Couldn't find artist"
+		album = name
+		artist = name
+		return artist,album,title
+
+	try:
+		album = divi_al.find('a').contents[0]
+		album = album[:-7]
+
+	except Exception:
+		print "Couldn't find album name"
+		album = name
+		return artist,album,title
+
+	
+	
+	return artist,album,title
+	
+	
+
+	
+
 
 def prompt(url): 
 	x = int(raw_input('\nEnter song number > '))
@@ -91,7 +167,7 @@ def download(url, title):
 		os.rename(initial_title,title+'.mp3') #Renames file to song title
 	except Exception:
 		print "Could not rename the file."
-		exit()
+		pass
 
 def get_albumart(query): 
 	print "\nFetching Album Art.."
@@ -121,7 +197,7 @@ def add_albumart(image, title):
 		audio = MP3(title,ID3=ID3)
 	except Exception:
 		print "An Error occured while adding the album art "
-		exit()
+		pass
 
 	try:
 		audio.add_tags()
@@ -139,6 +215,27 @@ def add_albumart(image, title):
 		)
 	audio.save()
 
+def add_details(fname,new_title,artist,album):
+
+
+	print "Adding details"
+
+	try:
+		tags = ID3(fname)
+	except ID3NoHeaderError:
+		print "Adding ID3 header"
+		tags = ID3()
+
+	tags["TALB"] = TALB(encoding = 3,text = album)
+	tags["TIT2"] = TIT2(encoding = 3, text = new_title)
+	tags["TPE1"] = TPE1(encoding = 3, text = artist)
+   
+
+	tags.save(fname)
+
+
+	
+	
 
 
 '''Main Method'''
@@ -151,12 +248,16 @@ if mode == 'S' or mode =='s':
 	song_YT_URL,title = get_url(song_name) #Gets YT url
 
 	download(song_YT_URL,title) #Saves as .mp3 file
+	artist,album,new_title = get_albumname(title)
 
-	image = get_albumart(title) #Gets album art
+	image = get_albumart(album) #Gets album art
 	title = title.decode('utf-8')
 	title = title + '.mp3'
 	title = title.encode('utf-8')
-	add_albumart(image,title) #Adds album art to song
+	add_albumart(image,title)
+	add_details(title,new_title,artist,album)
+	
+	#Adds album art to song
 
 elif mode == 'M' or mode == 'm':
 	file = raw_input('Enter file location > ') 
@@ -170,12 +271,14 @@ elif mode == 'M' or mode == 'm':
 		
 
 		download(song_YT_URL,title) #Downloads song
+		artist,album,new_title = get_albumname(title)
 
 		image = get_albumart(title) #Gets album art url
 		title = title.decode('utf-8')
 		title = title + '.mp3'
 		title = title.encode('utf-8')
 		add_albumart(image,title) #Adds album art
+		add_details(title,new_title,artist,album)
 
 else:
 	print('Error. Invalid mode.') #If mode is not 'S/s' or 'M/m'
