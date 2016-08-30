@@ -20,9 +20,10 @@ script,mode = argv
 
 ''' To do : 
 		1. Testing 
-		2. Handle Unicode 
+		2. Handle NonUnicode 
 		3. Check VA for album artists
 		4. Clean up code (variable names and comments)
+		5. Ask for album name if failed? [10 seconds for y confirmation]
 '''
 
 def get_albumname(name):
@@ -85,6 +86,11 @@ def get_albumname(name):
 		album = name
 		return artist,album,title
 
+
+
+	print artist
+	print album
+	print title
 	
 	
 	return artist,album,title
@@ -171,12 +177,13 @@ def download(url, title):
 
 def get_albumart(query): 
 	print "\nFetching Album Art.."
-	query = query.decode('utf-8')
+
 	query = query + " Album Art"
 	query = query.split()
 	query ='+'.join(query)
+	query = query.encode('utf-8')
 	
-	url = ("https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch").encode('utf-8')
+	url = ("https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch")
 	
 
 	header = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
@@ -229,6 +236,7 @@ def add_details(fname,new_title,artist,album):
 	tags["TALB"] = TALB(encoding = 3,text = album)
 	tags["TIT2"] = TIT2(encoding = 3, text = new_title)
 	tags["TPE1"] = TPE1(encoding = 3, text = artist)
+	tags["TPE2"] = TPE2(encoding = 3, text = "Various Artists")
    
 
 	tags.save(fname)
