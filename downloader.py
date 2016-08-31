@@ -20,10 +20,22 @@ script,mode = argv
 
 ''' To do : 
 		1. Testing 
-		3. Clean up code (variable names and comments)
-
 '''
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[32m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    GRAY = '\033[30m'
+    YELLOW = '\033[33m'
+
+
 def getURL(songInput):	
+	print bcolors.YELLOW
 	songInput = songInput.decode('utf-8')
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
@@ -48,12 +60,15 @@ def getURL(songInput):
 			print '#'+str(num+1)+' ', #Prints list
 			print link_title
 
+
 			num = num + 1
 
 		elif mode == 'L' or mode == 'l': #For multiple song mode, return the first result
 			return (urls_list.values()[0], urls_list.keys()[0])
 
 	url,title = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
+
+	print bcolors.ENDC
 
 	return url,title #Returns Name of Song and URL of Music Video
 
@@ -65,7 +80,9 @@ def prompt(url):
 	system('clear')
 	print 'Download Song: ',
 	print title,
+	print bcolors.UNDERLINE
 	print 'Y/N?'
+	print bcolors.ENDC
 	x = raw_input('>')
 	if x == 'Y' or x == 'y':
 		pass
@@ -98,11 +115,15 @@ def downloadSong(song_YT_URL, title):
 	try:	
 		rename(initial_title,title) #Renames file to song title
 	except Exception:
+		print bcolors.FAIL
 		print "Could not rename the file."
+		print bcolors.ENDC
 		pass
 
 
 def getDetails(songName):
+	print bcolors.FAIL
+	year =""
 	timeout = 10
 	title = songName
 
@@ -131,7 +152,6 @@ def getDetails(songName):
 			title = title[1:-8]
 			year = title[-8:]
 		except Exception:
-
 			print "I couldn't reset the song title, would you like to manually enter it? (Y/N) : ",
 			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
@@ -142,8 +162,12 @@ def getDetails(songName):
 
 			if check == 'Y\n' or check =='y\n':
 				title = raw_input("Enter song title : ")
+				year =""
 			else:
 				title = songName
+				year =""
+
+			
 	
 		
 
@@ -206,6 +230,8 @@ def getDetails(songName):
 			title = songName
 			artist = "Unknown"
 
+		print bcolors.ENDC
+
 
 	
 
@@ -214,7 +240,9 @@ def getDetails(songName):
 
 
 def getAlbumArt(Album_Name): 
+	print bcolors.OKGREEN
 	print "\nFetching Album Art.."
+	print bcolors.ENDC
 
 	Album_Name = Album_Name + " Album Art"
 	Album_Name = Album_Name.split()
@@ -258,15 +286,18 @@ def add_AlbumArt(albumArt_url, title):
 		audio.save()
 
 	except Exception:
+		print bcolors.FAIL
 		print "An Error occured while adding the album art "
+		print bcolors.ENDC
 		pass
 
 	
 
-def add_Details(fname,new_title,artist,album,year):
+def add_Details(fname,new_title,artist,album,year = ""):
 
-
-	print "Adding song details"
+	print bcolors.OKGREEN
+	print "Adding song details.."
+	print bcolors.ENDC
 
 	try:
 		tags = ID3(fname)
@@ -285,10 +316,16 @@ def add_Details(fname,new_title,artist,album,year):
 
 
 def singleMode():
+	print bcolors.HEADER
 	song_input = raw_input('Enter Song Name/Keywords : ')
+	print bcolors.ENDC
+
 
 	YT_URL,title = getURL(song_input) #Gets YT url
+
+	print bcolors.GRAY
 	downloadSong(YT_URL,title) #Saves as .mp3 file
+	print bcolors.ENDC
 
 	artist_name,album_name,new_title,year = getDetails(title)
 	album_art_url = getAlbumArt(album_name) #Gets album art
@@ -298,7 +335,14 @@ def singleMode():
 	title = title.encode('utf-8')
 
 	add_AlbumArt(album_art_url,title)
-	add_Details(title,new_title,artist_name,album_name,year)	
+	add_Details(title,new_title,artist_name,album_name,year)
+
+	
+
+	print bcolors.OKBLUE
+	print "Successfully downloaded : ",
+	print new_title 
+	print bcolors.ENDC	
 
 
 def listMode():
