@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-from sys import argv
+import sys
 from collections import OrderedDict
+from select import select
 
 from bs4 import BeautifulSoup
 import requests
@@ -15,7 +16,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC, APIC, error
 
-script,mode = argv
+script,mode = sys.argv
 
 ''' To do : 
 		1. Testing 
@@ -80,7 +81,6 @@ def prompt(url):
 
 
 def download(url, title):
-	print url
 	title = title.decode('utf-8')
 	initial_title = (title+'-'+url[32:]+'.mp3').encode('utf-8')
 	title = (title + '.mp3').encode('utf-8')
@@ -104,6 +104,7 @@ def download(url, title):
 		pass
 
 def get_albumname(name):
+	timeout = 10
 	title = name
 
 	array = list(title)
@@ -113,7 +114,6 @@ def get_albumname(name):
 	title = ''.join(array)
 
 	title = "http://search.letssingit.com/cgi-exe/am.cgi?a=search&artist_id=&l=archive&s=" + title
-	print title
 	title = requests.get(title)
 	soup = BeautifulSoup(title.text,"html.parser")
 	link = soup.find('a',{'class' : 'high_profile'})
@@ -131,8 +131,16 @@ def get_albumname(name):
 			title = divi_title.contents[0]
 			title = title[1:-8]
 		except Exception:
-			check = raw_input("Couldn't reset song title, would you like to manually enter it? (Y/N) : ")
-			if check == 'Y' or check =='y':
+
+			print "I couldn't reset the song title, would you like to manually enter it? (Y/N) : ",
+			rlist, _, _ = select([sys.stdin], [], [], 10)
+			if rlist:
+				check = sys.stdin.readline()
+			else:
+   				print "No input. I'll just move on"
+   				check = 'N'
+
+			if check == 'Y\n' or check =='y\n':
 				title = raw_input("Enter song title : ")
 			else:
 				title = name
@@ -142,8 +150,15 @@ def get_albumname(name):
 		try:
 			artist = divi_title.contents[1].getText()
 		except Exception:
-			check = raw_input("Couldn't find artist name, would you like to manually enter it? (Y/N) : ")
-			if check == 'Y' or check =='y':
+			print "I couldn't find artist name, would you like to manually enter it? (Y/N) : ",
+			rlist, _, _ = select([sys.stdin], [], [], 10)
+			if rlist:
+				check = sys.stdin.readline()
+			else:
+   				print "No input. I'll just move on"
+   				check = 'N'
+
+			if check == 'Y\n' or check =='y\n':
 				artist = raw_input("Enter artist name : ")
 			else:
 				artist = "Unknown"
@@ -153,8 +168,15 @@ def get_albumname(name):
 			album = album[:-7]
 
 		except Exception:
-			check = raw_input("Couldn't find album name, would you like to manually enter it? (Y/N) : ")
-			if check == 'Y' or check =='y':
+			print "I couldn't find the album name, would you like to manually enter it? (Y/N) : ",
+			rlist, _, _ = select([sys.stdin], [], [], 10)
+			if rlist:
+				check = sys.stdin.readline()
+			else:
+   				print "No input. I'll just move on"
+   				check = 'N'
+
+			if check == 'Y\n' or check =='y\n':
 				album = raw_input("Enter album name : ")
 			else:
 				album = name
@@ -162,8 +184,20 @@ def get_albumname(name):
 
 	except Exception:
 		
-		check = raw_input("Couldn't find song details, would you like to manually enter them? (Y/N) : ")
-		if check == 'Y' or check =='y':
+		print "I couldn't find song details, would you like to manually enter them? (Y/N) : "
+
+		rlist, _, _ = select([sys.stdin], [], [], 10)
+		if rlist:
+			check = sys.stdin.readline()
+		else:
+   			print "No input. I'll just move on"
+   			check = "N"
+   			
+
+  
+
+		if check == 'Y\n' or check =='y\n':
+			
 			album = raw_input("Enter album name : ")
 			title = raw_input("Enter song title : ")
 			artist = raw_input("Enter song artist : ")
@@ -171,8 +205,7 @@ def get_albumname(name):
 			album = name
 			title = name
 			artist = "Unknown"
-		
-		
+
 
 	
 
@@ -233,7 +266,7 @@ def add_albumart(image, title):
 def add_details(fname,new_title,artist,album):
 
 
-	print "Adding details"
+	print "Adding song details"
 
 	try:
 		tags = ID3(fname)
@@ -262,9 +295,6 @@ os.system('clear')
 if mode == 'S' or mode =='s':
 	song_name = raw_input('Enter Song Name/Keywords : ')
 	song_YT_URL,title = get_url(song_name) #Gets YT url
-
-	print "T : "
-	print song_YT_URL
 
 
 	download(song_YT_URL,title) #Saves as .mp3 file
