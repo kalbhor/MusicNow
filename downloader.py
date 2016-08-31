@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import os
 from sys import argv
 from collections import OrderedDict
@@ -11,6 +9,7 @@ import urllib2
 import json
 
 import youtube_dl
+from time import sleep
 
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3NoHeaderError
@@ -21,106 +20,12 @@ script,mode = argv
 ''' To do : 
 		1. Testing 
 		2. Handle NonUnicode 
-		3. Check VA for album artists
-		4. Clean up code (variable names and comments)
+		3. Clean up code (variable names and comments)
 		5. Ask for album name if failed? [10 seconds for y confirmation]
+
 '''
-
-def get_albumname(name):
-	title = name
-
-	array = list(title)
-	for i in range(0,len(title)):
-		if array[i] ==' ':
-			array[i] = '+'
-	title = ''.join(array)
-
-	title = "http://search.letssingit.com/cgi-exe/am.cgi?a=search&artist_id=&l=archive&s=" + title
-	print title
-	title = requests.get(title)
-	soup = BeautifulSoup(title.text,"html.parser")
-	link = soup.find('a',{'class' : 'high_profile'})
-	try:
-		link = link.get('href')
-	except Exception:
-		print "Could not find album name"
-		title = name
-		album = name
-		artist = name
-		return artist,album,title
-
-	link = requests.get(link)
-
-	soup = BeautifulSoup(link.text,"html.parser")
-
-	
-	divi_al = soup.find('div',{'id' : 'albums'})
-	divi_title = soup.find('div',{'id':'content_artist'}).find('h1')
-
-	try:
-		title = divi_title.contents[0]
-		title = title[1:-8]
-	except Exception:
-		print "Couldn't reset title"
-		title = name
-		album = name
-		artist = name
-		return artist,album,title 
-		
-
-
-	try:
-		artist = divi_title.contents[1].getText()
-	except Exception:
-		"Couldn't find artist"
-		album = name
-		artist = name
-		return artist,album,title
-
-	try:
-		album = divi_al.find('a').contents[0]
-		album = album[:-7]
-
-	except Exception:
-		print "Couldn't find album name"
-		album = name
-		return artist,album,title
-
-
-
-	print artist
-	print album
-	print title
-	
-	
-	return artist,album,title
-	
-	
-
-	
-
-
-def prompt(url): 
-	x = int(raw_input('\nEnter song number > '))
-	x = x - 1
-	link = url.values()[x]
-	title = url.keys()[x]
-	os.system('clear')
-	print 'Download Song: ',
-	print title,
-	print 'Y/N?'
-	x = raw_input('>')
-	if x == 'Y' or x == 'y':
-		pass
-	elif x == 'N' or x == 'n':
-		exit()
-	else:
-		print 'Invalid input'
-		exit()
-
-	return title,link
-
 def get_url(name):	
+	name = name.decode('utf-8')
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
 	print '\n'
@@ -149,14 +54,37 @@ def get_url(name):
 		elif mode == 'M' or mode == 'm': #For multiple song mode, return the first result
 			return (urls_list.values()[0], urls_list.keys()[0])
 
-	title,url = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
+	url,title = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
 
-	return (url,title) #Returns Name of Song and URL of Music Video
+	return url,title #Returns Name of Song and URL of Music Video
+
+def prompt(url): 
+	x = int(raw_input('\nEnter song number > '))
+	x = x - 1
+	link = url.values()[x]
+	title = url.keys()[x]
+	os.system('clear')
+	print 'Download Song: ',
+	print title,
+	print 'Y/N?'
+	x = raw_input('>')
+	if x == 'Y' or x == 'y':
+		pass
+	elif x == 'N' or x == 'n':
+		exit()
+	else:
+		print 'Invalid input'
+		exit()
+
+	return link,title
+
 
 def download(url, title):
+	print url
 	title = title.decode('utf-8')
 	initial_title = (title+'-'+url[32:]+'.mp3').encode('utf-8')
-	print initial_title
+	title = (title + '.mp3').encode('utf-8')
+	#print initial_title
 	ydl_opts = {
 		'format': 'bestaudio/best',
 		'postprocessors': [{
@@ -167,13 +95,90 @@ def download(url, title):
 	}
 
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-		ydl.download([(url)]) #Downloads audio using youtube-dl
+		ydl.download([url]) #Downloads audio using youtube-dl
 
 	try:	
-		os.rename(initial_title,title+'.mp3') #Renames file to song title
+		os.rename(initial_title,title) #Renames file to song title
 	except Exception:
 		print "Could not rename the file."
 		pass
+
+def get_albumname(name):
+	title = name
+
+	array = list(title)
+	for i in range(0,len(title)):
+		if array[i] ==' ':
+			array[i] = '+'
+	title = ''.join(array)
+
+	title = "http://search.letssingit.com/cgi-exe/am.cgi?a=search&artist_id=&l=archive&s=" + title
+	print title
+	title = requests.get(title)
+	soup = BeautifulSoup(title.text,"html.parser")
+	link = soup.find('a',{'class' : 'high_profile'})
+	try:
+		link = link.get('href')
+		link = requests.get(link)
+
+		soup = BeautifulSoup(link.text,"html.parser")
+
+	
+		divi_al = soup.find('div',{'id' : 'albums'})
+		divi_title = soup.find('div',{'id':'content_artist'}).find('h1')
+
+		try:
+			title = divi_title.contents[0]
+			title = title[1:-8]
+		except Exception:
+			check = raw_input("Couldn't reset song title, would you like to manually enter it? (Y/N) : ")
+			if check == 'Y' or check =='y':
+				title = raw_input("Enter song title : ")
+			else:
+				title = name
+	
+		
+
+		try:
+			artist = divi_title.contents[1].getText()
+		except Exception:
+			check = raw_input("Couldn't find artist name, would you like to manually enter it? (Y/N) : ")
+			if check == 'Y' or check =='y':
+				artist = raw_input("Enter artist name : ")
+			else:
+				artist = "Unknown"
+
+		try:
+			album = divi_al.find('a').contents[0]
+			album = album[:-7]
+
+		except Exception:
+			check = raw_input("Couldn't find album name, would you like to manually enter it? (Y/N) : ")
+			if check == 'Y' or check =='y':
+				album = raw_input("Enter album name : ")
+			else:
+				album = name
+
+
+	except Exception:
+		
+		check = raw_input("Couldn't find song details, would you like to manually enter them? (Y/N) : ")
+		if check == 'Y' or check =='y':
+			album = raw_input("Enter album name : ")
+			title = raw_input("Enter song title : ")
+			artist = raw_input("Enter song artist : ")
+		else:
+			album = name
+			title = name
+			artist = "Unknown"
+		
+		
+
+	
+
+	return artist,album,title	
+
+
 
 def get_albumart(query): 
 	print "\nFetching Album Art.."
@@ -200,27 +205,30 @@ def get_albumart(query):
 
 def add_albumart(image, title): 
 	response = urllib2.urlopen(image) #Gets album art from url
+
 	try:
 		audio = MP3(title,ID3=ID3)
+		try:
+			audio.add_tags()
+		except Exception:
+			pass
+
+		audio.tags.add(
+			APIC(
+				encoding=3, #UTF-8
+				mime='image/png',
+				type=3, # 3 is for album art
+				desc=u'Cover',
+				data=response.read() #Reads and adds album art
+				)
+			)
+		audio.save()
+
 	except Exception:
 		print "An Error occured while adding the album art "
 		pass
 
-	try:
-		audio.add_tags()
-	except Exception:
-		pass
-
-	audio.tags.add(
-		APIC(
-			encoding=3, #UTF-8
-			mime='image/png',
-			type=3, # 3 is for album art
-			desc=u'Cover',
-			data=response.read() #Reads and adds album art
-			)
-		)
-	audio.save()
+	
 
 def add_details(fname,new_title,artist,album):
 
@@ -254,6 +262,10 @@ os.system('clear')
 if mode == 'S' or mode =='s':
 	song_name = raw_input('Enter Song Name/Keywords : ')
 	song_YT_URL,title = get_url(song_name) #Gets YT url
+
+	print "T : "
+	print song_YT_URL
+
 
 	download(song_YT_URL,title) #Saves as .mp3 file
 	artist,album,new_title = get_albumname(title)
