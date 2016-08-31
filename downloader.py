@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
-import sys
+from os import system,rename
+from sys import argv,stdin
 from collections import OrderedDict
 from select import select
 
@@ -16,27 +16,25 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC, APIC, error
 
-script,mode = sys.argv
+script,mode = argv
 
 ''' To do : 
 		1. Testing 
-		2. Handle NonUnicode 
 		3. Clean up code (variable names and comments)
-		5. Ask for album name if failed? [10 seconds for y confirmation]
 
 '''
-def get_url(name):	
-	name = name.decode('utf-8')
+def getURL(songInput):	
+	songInput = songInput.decode('utf-8')
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
 	print '\n'
-	array = list(name)
-	for i in range(0,len(name)):
+	array = list(songInput)
+	for i in range(0,len(songInput)):
 		if array[i] ==' ':
 			array[i] = '+'
-	name = ''.join(array)
-	name = 'https://www.youtube.com/results?search_query=' + name
-	html = requests.get(name)
+	songInput = ''.join(array)
+	songInput = 'https://www.youtube.com/results?search_query=' + songInput
+	html = requests.get(songInput)
 	soup = BeautifulSoup(html.text,'html.parser')
 		
 	YT_Class = 'yt-uix-sessionlink yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2       spf-link '	#YouTube Class holding video
@@ -52,7 +50,7 @@ def get_url(name):
 
 			num = num + 1
 
-		elif mode == 'M' or mode == 'm': #For multiple song mode, return the first result
+		elif mode == 'L' or mode == 'l': #For multiple song mode, return the first result
 			return (urls_list.values()[0], urls_list.keys()[0])
 
 	url,title = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
@@ -64,7 +62,7 @@ def prompt(url):
 	x = x - 1
 	link = url.values()[x]
 	title = url.keys()[x]
-	os.system('clear')
+	system('clear')
 	print 'Download Song: ',
 	print title,
 	print 'Y/N?'
@@ -80,11 +78,11 @@ def prompt(url):
 	return link,title
 
 
-def download(url, title):
+def downloadSong(song_YT_URL, title):
 	title = title.decode('utf-8')
-	initial_title = (title+'-'+url[32:]+'.mp3').encode('utf-8')
+	initial_title = (title+'-'+song_YT_URL[32:]+'.mp3').encode('utf-8')
 	title = (title + '.mp3').encode('utf-8')
-	#print initial_title
+
 	ydl_opts = {
 		'format': 'bestaudio/best',
 		'postprocessors': [{
@@ -95,17 +93,18 @@ def download(url, title):
 	}
 
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-		ydl.download([url]) #Downloads audio using youtube-dl
+		ydl.download([song_YT_URL]) #Downloads audio using youtube-dl
 
 	try:	
-		os.rename(initial_title,title) #Renames file to song title
+		rename(initial_title,title) #Renames file to song title
 	except Exception:
 		print "Could not rename the file."
 		pass
 
-def get_albumname(name):
+
+def getDetails(songName):
 	timeout = 10
-	title = name
+	title = songName
 
 	array = list(title)
 	for i in range(0,len(title)):
@@ -130,12 +129,13 @@ def get_albumname(name):
 		try:
 			title = divi_title.contents[0]
 			title = title[1:-8]
+			year = title[-8:]
 		except Exception:
 
 			print "I couldn't reset the song title, would you like to manually enter it? (Y/N) : ",
-			rlist, _, _ = select([sys.stdin], [], [], 10)
+			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
-				check = sys.stdin.readline()
+				check = stdin.readline()
 			else:
    				print "No input. I'll just move on"
    				check = 'N'
@@ -143,7 +143,7 @@ def get_albumname(name):
 			if check == 'Y\n' or check =='y\n':
 				title = raw_input("Enter song title : ")
 			else:
-				title = name
+				title = songName
 	
 		
 
@@ -151,9 +151,9 @@ def get_albumname(name):
 			artist = divi_title.contents[1].getText()
 		except Exception:
 			print "I couldn't find artist name, would you like to manually enter it? (Y/N) : ",
-			rlist, _, _ = select([sys.stdin], [], [], 10)
+			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
-				check = sys.stdin.readline()
+				check = stdin.readline()
 			else:
    				print "No input. I'll just move on"
    				check = 'N'
@@ -169,9 +169,9 @@ def get_albumname(name):
 
 		except Exception:
 			print "I couldn't find the album name, would you like to manually enter it? (Y/N) : ",
-			rlist, _, _ = select([sys.stdin], [], [], 10)
+			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
-				check = sys.stdin.readline()
+				check = stdin.readline()
 			else:
    				print "No input. I'll just move on"
    				check = 'N'
@@ -179,16 +179,16 @@ def get_albumname(name):
 			if check == 'Y\n' or check =='y\n':
 				album = raw_input("Enter album name : ")
 			else:
-				album = name
+				album = songName
 
 
 	except Exception:
 		
 		print "I couldn't find song details, would you like to manually enter them? (Y/N) : "
 
-		rlist, _, _ = select([sys.stdin], [], [], 10)
+		rlist, _, _ = select([stdin], [], [], 10)
 		if rlist:
-			check = sys.stdin.readline()
+			check = stdin.readline()
 		else:
    			print "No input. I'll just move on"
    			check = "N"
@@ -202,26 +202,26 @@ def get_albumname(name):
 			title = raw_input("Enter song title : ")
 			artist = raw_input("Enter song artist : ")
 		else:
-			album = name
-			title = name
+			album = songName
+			title = songName
 			artist = "Unknown"
 
 
 	
 
-	return artist,album,title	
+	return artist,album,title,year	
 
 
 
-def get_albumart(query): 
+def getAlbumArt(Album_Name): 
 	print "\nFetching Album Art.."
 
-	query = query + " Album Art"
-	query = query.split()
-	query ='+'.join(query)
-	query = query.encode('utf-8')
+	Album_Name = Album_Name + " Album Art"
+	Album_Name = Album_Name.split()
+	Album_Name ='+'.join(Album_Name)
+	Album_Name = Album_Name.encode('utf-8')
 	
-	url = ("https://www.google.co.in/search?q="+query+"&source=lnms&tbm=isch")
+	url = ("https://www.google.co.in/search?q="+Album_Name+"&source=lnms&tbm=isch")
 	
 
 	header = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
@@ -232,12 +232,12 @@ def get_albumart(query):
 	
 
 	a = soup.find("div",{"class":"rg_meta"})
-	link = json.loads(a.text)["ou"]
+	albumArt_url = json.loads(a.text)["ou"]
 
-	return link
+	return albumArt_url
 
-def add_albumart(image, title): 
-	response = urllib2.urlopen(image) #Gets album art from url
+def add_AlbumArt(albumArt_url, title): 
+	img = urllib2.urlopen(albumArt_url) #Gets album art from url
 
 	try:
 		audio = MP3(title,ID3=ID3)
@@ -252,7 +252,7 @@ def add_albumart(image, title):
 				mime='image/png',
 				type=3, # 3 is for album art
 				desc=u'Cover',
-				data=response.read() #Reads and adds album art
+				data=img.read() #Reads and adds album art
 				)
 			)
 		audio.save()
@@ -263,7 +263,7 @@ def add_albumart(image, title):
 
 	
 
-def add_details(fname,new_title,artist,album):
+def add_Details(fname,new_title,artist,album,year):
 
 
 	print "Adding song details"
@@ -274,61 +274,69 @@ def add_details(fname,new_title,artist,album):
 		print "Adding ID3 header"
 		tags = ID3()
 
-	tags["TALB"] = TALB(encoding = 3,text = album)
+	tags["TALB"] = TALB(encoding = 3,text  = album)
 	tags["TIT2"] = TIT2(encoding = 3, text = new_title)
 	tags["TPE1"] = TPE1(encoding = 3, text = artist)
 	tags["TPE2"] = TPE2(encoding = 3, text = "Various Artists")
+	tags["TDRC"] = TDRC(encoding = 3, text = year)
    
 
 	tags.save(fname)
 
 
+def singleMode():
+	song_input = raw_input('Enter Song Name/Keywords : ')
+
+	YT_URL,title = getURL(song_input) #Gets YT url
+	downloadSong(YT_URL,title) #Saves as .mp3 file
+
+	artist_name,album_name,new_title,year = getDetails(title)
+	album_art_url = getAlbumArt(album_name) #Gets album art
+
+	title = title.decode('utf-8')
+	title = title + '.mp3'
+	title = title.encode('utf-8')
+
+	add_AlbumArt(album_art_url,title)
+	add_Details(title,new_title,artist_name,album_name,year)	
+
+
+def listMode():
+	file = raw_input('Enter file location > ') 
+
+	with open(file) as listOfSongs:
+		content = listOfSongs.readlines() #Stores each song line by line
+		
+		
 	
+	for song_names in content: #iterates over each song name
+
+		YT_URL,title = getURL(song_names) #Gets YT url
+		downloadSong(YT_URL,title) #Downloads song
+
+		artist,album_name,new_title = getDetails(title)
+		album_art_url = getAlbumArt(title.decode('utf-8')) #Gets album art url
+
+		title = title.decode('utf-8')
+		title = title + '.mp3'
+		title = title.encode('utf-8')
+
+		add_AlbumArt(album_art_url,title)
+		add_Details(title,new_title,artist,album_name)
 	
 
 
 '''Main Method'''
 
-os.system('clear') 
+system('clear') 
 
 
 if mode == 'S' or mode =='s':
-	song_name = raw_input('Enter Song Name/Keywords : ')
-	song_YT_URL,title = get_url(song_name) #Gets YT url
+	singleMode()
 
 
-	download(song_YT_URL,title) #Saves as .mp3 file
-	artist,album,new_title = get_albumname(title)
-
-	image = get_albumart(album) #Gets album art
-	title = title.decode('utf-8')
-	title = title + '.mp3'
-	title = title.encode('utf-8')
-	add_albumart(image,title)
-	add_details(title,new_title,artist,album)
-	
-	#Adds album art to song
-
-elif mode == 'M' or mode == 'm':
-	file = raw_input('Enter file location > ') 
-
-	with open(file) as f:
-		content = f.readlines() #Stores each song line by line
-	
-	for song_names in content: #iterates over each song name
-		song_names = song_names.decode('utf-8')
-		song_YT_URL,title = get_url(song_names) #Gets YT url
-		
-
-		download(song_YT_URL,title) #Downloads song
-		artist,album,new_title = get_albumname(title)
-
-		image = get_albumart(title) #Gets album art url
-		title = title.decode('utf-8')
-		title = title + '.mp3'
-		title = title.encode('utf-8')
-		add_albumart(image,title) #Adds album art
-		add_details(title,new_title,artist,album)
+elif mode == 'L' or mode == 'l':
+	listMode()
 
 else:
-	print('Error. Invalid mode.') #If mode is not 'S/s' or 'M/m'
+	print('Error. Invalid mode.') #If mode is not 'S/s' or 'L/l'
