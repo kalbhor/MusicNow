@@ -114,9 +114,10 @@ def downloadSong(song_YT_URL, title):
 
 	try:	
 		rename(initial_title,title) #Renames file to song title
-	except Exception:
+	except Exception as e:
 		print bcolors.FAIL
 		print "Could not rename the file."
+		print e
 		print bcolors.ENDC
 		pass
 
@@ -301,18 +302,21 @@ def add_Details(fname,new_title,artist,album,year = ""):
 
 	try:
 		tags = ID3(fname)
-	except ID3NoHeaderError:
-		print "Adding ID3 header"
-		tags = ID3()
-
-	tags["TALB"] = TALB(encoding = 3,text  = album)
-	tags["TIT2"] = TIT2(encoding = 3, text = new_title)
-	tags["TPE1"] = TPE1(encoding = 3, text = artist)
-	tags["TPE2"] = TPE2(encoding = 3, text = "Various Artists")
-	tags["TDRC"] = TDRC(encoding = 3, text = year)
+		tags["TALB"] = TALB(encoding = 3,text  = album)
+		tags["TIT2"] = TIT2(encoding = 3, text = new_title)
+		tags["TPE1"] = TPE1(encoding = 3, text = artist)
+		tags["TPE2"] = TPE2(encoding = 3, text = "Various Artists")
+		tags["TDRC"] = TDRC(encoding = 3, text = year)
    
 
-	tags.save(fname)
+		tags.save(fname)
+		
+	except Exception:
+		print "Couldn't add song details"
+		pass
+		
+
+	
 
 
 def singleMode():
@@ -356,9 +360,11 @@ def listMode():
 	for song_names in content: #iterates over each song name
 
 		YT_URL,title = getURL(song_names) #Gets YT url
+		print bcolors.GRAY
 		downloadSong(YT_URL,title) #Downloads song
+		print bcolors.ENDC
 
-		artist,album_name,new_title = getDetails(title)
+		artist,album_name,new_title,year = getDetails(title)
 		album_art_url = getAlbumArt(title.decode('utf-8')) #Gets album art url
 
 		title = title.decode('utf-8')
@@ -366,7 +372,7 @@ def listMode():
 		title = title.encode('utf-8')
 
 		add_AlbumArt(album_art_url,title)
-		add_Details(title,new_title,artist,album_name)
+		add_Details(title,new_title,artist,album_name,year)
 	
 
 
