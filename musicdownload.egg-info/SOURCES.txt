@@ -1,0 +1,8 @@
+setup.py
+musicdownload/__init__.py
+musicdownload.egg-info/PKG-INFO
+musicdownload.egg-info/SOURCES.txt
+musicdownload.egg-info/dependency_links.txt
+musicdownload.egg-info/not-zip-safe
+musicdownload.egg-info/requires.txt
+musicdownload.egg-info/top_level.txt

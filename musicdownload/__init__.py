@@ -1,4 +1,3 @@
-#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 from os import system,rename
 from sys import argv,stdin
@@ -17,7 +16,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC, APIC, error
 
-script,mode = argv
+
 
 ''' To do : 
 		1. Testing 
@@ -58,17 +57,15 @@ def getURL(songInput):
 		link_title = (i.get('title')).encode('utf-8')
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
 
-		if mode == 'S' or mode == 's': #Display list for single song mode
-			print '#'+str(num+1)+' ', #Prints list
-			print link_title
+		
+		print '#'+str(num+1)+' ', #Prints list
+		print link_title
 
 
-			num = num + 1
+		num = num + 1
 
-		elif mode == 'L' or mode == 'l': #For multiple song mode, return the first result
-			return (urls_list.values()[0], urls_list.keys()[0])
 
-	url,title = prompt(urls_list,prompt_songInput.encode('utf-8')) #Gets the demanded song title and url (only for single song mode)
+	url,title = prompt(urls_list,prompt_songInput.encode('utf-8')) #Gets the demanded song title and url
 
 	print bcolors.ENDC
 
@@ -351,44 +348,12 @@ def singleMode():
 	print bcolors.ENDC	
 
 
-def listMode():
-	file = raw_input('Enter file location > ') 
 
-	with open(file) as listOfSongs:
-		content = listOfSongs.readlines() #Stores each song line by line
-		
-		
-	
-	for song_names in content: #iterates over each song name
-
-		YT_URL,title = getURL(song_names) #Gets YT url
-		print bcolors.GRAY
-		downloadSong(YT_URL,title) #Downloads song
-		print bcolors.ENDC
-
-		artist,album_name,new_title,year = getDetails(title)
-		album_art_url = getAlbumArt(title.decode('utf-8')) #Gets album art url
-
-		title = title.decode('utf-8')
-		title = title + '.mp3'
-		title = title.encode('utf-8')
-
-		add_AlbumArt(album_art_url,title)
-		add_Details(title,new_title,artist,album_name,year)
 	
 
 
 '''Main Method'''
 
 system('clear') 
+singleMode()
 
-
-if mode == 'S' or mode =='s':
-	singleMode()
-
-
-elif mode == 'L' or mode == 'l':
-	listMode()
-
-else:
-	print('Error. Invalid mode.') #If mode is not 'S/s' or 'L/l'
