@@ -8,6 +8,7 @@ setup(name='musicdownload',
       author_email='lakshaykalbhor@gmail.com',
       license='MIT',
       packages=['musicdownload'],
+      scripts=["bin/musicdownload"],
       install_requires=[
           'youtube-dl',
           'bs4',
