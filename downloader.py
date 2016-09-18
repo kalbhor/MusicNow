@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 from os import system,rename
 from sys import argv,stdin
@@ -37,6 +38,7 @@ class bcolors:
 def getURL(songInput):	
 	print bcolors.YELLOW
 	songInput = songInput.decode('utf-8')
+	prompt_songInput = songInput
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
 	print '\n'
@@ -49,9 +51,9 @@ def getURL(songInput):
 	html = requests.get(songInput)
 	soup = BeautifulSoup(html.text,'html.parser')
 		
-	YT_Class = 'yt-uix-sessionlink yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2       spf-link '	#YouTube Class holding video
+	YT_Class = 'spf-prefetch'	#YouTube Class holding video
 
-	for i in soup.findAll('a',{'class' : YT_Class}): #In all Youtube Search Results
+	for i in soup.findAll('a',{'rel' : YT_Class}): #In all Youtube Search Results
 		link = 'https://www.youtube.com' + (i.get('href'))
 		link_title = (i.get('title')).encode('utf-8')
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
@@ -66,13 +68,13 @@ def getURL(songInput):
 		elif mode == 'L' or mode == 'l': #For multiple song mode, return the first result
 			return (urls_list.values()[0], urls_list.keys()[0])
 
-	url,title = prompt(urls_list) #Gets the demanded song title and url (only for single song mode)
+	url,title = prompt(urls_list,prompt_songInput.encode('utf-8')) #Gets the demanded song title and url (only for single song mode)
 
 	print bcolors.ENDC
 
 	return url,title #Returns Name of Song and URL of Music Video
 
-def prompt(url): 
+def prompt(url,songInput): 
 	x = int(raw_input('\nEnter song number > '))
 	x = x - 1
 	link = url.values()[x]
@@ -87,7 +89,7 @@ def prompt(url):
 	if x == 'Y' or x == 'y':
 		pass
 	elif x == 'N' or x == 'n':
-		exit()
+		getURL(songInput)
 	else:
 		print 'Invalid input'
 		exit()
