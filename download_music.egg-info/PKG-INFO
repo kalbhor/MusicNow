@@ -1,8 +1,8 @@
 Metadata-Version: 1.0
 Name: download-music
-Version: 0.1
+Version: 0.2
 Summary: Lets you download music with album art and details
-Home-page: https://github.com/lakshaykalbhor/Music-Downloader
+Home-page: https://github.com/lakshaykalbhor/Download-Music
 Author: Lakshay Kalbhor
 Author-email: lakshaykalbhor@gmail.com
 License: MIT

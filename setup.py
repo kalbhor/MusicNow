@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(name='download-music',
-      version='0.1',
+      version='0.2',
       description='Lets you download music with album art and details',
-      url='https://github.com/lakshaykalbhor/Music-Downloader',
+      url='https://github.com/lakshaykalbhor/Download-Music',
       author='Lakshay Kalbhor',
       author_email='lakshaykalbhor@gmail.com',
       license='MIT',
