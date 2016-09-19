@@ -1,14 +1,21 @@
 # Download-Music
-Enter song name download the song with album art and song details.
+##### Enter song name and download the song with album art and song details.
+
+### Dependencies
+
+##### Mac
+
+```sh
+$ brew install libav
+```
+
+
+##### Ubuntu
+```sh
+$ sudo apt-get install libav-tools
+```
 
 ### Installation
-
-Mac :
-brew install libav
-
-Ubuntu : 
-sudo apt-get install libav-tools 
-
 ```sh
 $ sudo pip install download-music
 ```
@@ -21,6 +28,7 @@ $ sudo pip install download-music
 $ download-music
 
 > Enter Song Name/Keywords : When the levee breaks
+
 #1  When the Levee Breaks Lyrics
 #2  When The Levee Breaks Led Zeppelin +Lyrics
 #3  Led Zeppelin - When The Levee Breaks
