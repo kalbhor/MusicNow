@@ -1,2 +1,8 @@
-dist/*
-download_music.egg-info/*
+# Compiled python modules.
+*.pyc
+
+# Setuptools dist folder.
+/dist/
+
+# Python egg metadeta
+/*.egg-info

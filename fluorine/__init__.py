@@ -357,6 +357,6 @@ def singleMode():
 '''Main Method'''
 
 system('clear') 
-singleMode()
+
 
 
