@@ -1,13 +1,13 @@
 from setuptools import setup
 
-setup(name='fluorine',
-      version='0.2',
+setup(name='metamusic',
+      version='0.1',
       description='Lets you download music with album art and details',
       url='https://github.com/lakshaykalbhor/Download-Music',
       author='Lakshay Kalbhor',
       author_email='lakshaykalbhor@gmail.com',
       license='MIT',
-      packages =['fluorine'],
+      packages =['metamusic'],
       install_requires=[
           'youtube-dl',
           'bs4',
@@ -15,7 +15,7 @@ setup(name='fluorine',
           'requests'
       ],
       entry_points={
-        'console_scripts': ['fluorine=fluorine.command_line:main'],
+        'console_scripts': ['metamusic=metamusic.command_line:main'],
       },
       
       zip_safe=False
