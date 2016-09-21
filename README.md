@@ -1,5 +1,5 @@
 # MusicNow
-##### Enter song name and download the song with album art and song details.
+##### Download music with album art and details.
 
 ### Dependencies
 
@@ -16,9 +16,17 @@ $ sudo apt-get install libav-tools
 ```
 
 ### Installation
+
+##### Python 2.7
 ```sh
 $ sudo pip install musicnow
 ```
+
+##### Python 3.4
+```sh
+$ sudo pip3 install musicnow
+```
+
 
 
 
