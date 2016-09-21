@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+from __future__ import print_function
 from os import system,rename
 from sys import argv,stdin
 from collections import OrderedDict
@@ -7,8 +7,8 @@ from select import select
 
 from bs4 import BeautifulSoup
 import requests
-import urllib2
 import json
+
 
 import youtube_dl
 from time import sleep
@@ -17,12 +17,23 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3NoHeaderError
 from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC, APIC, error
 
+from sys import version_info
+
+if version_info[0]<3:
+	input=raw_input
+	from urllib2 import urlopen,Request
+	from urllib2 import quote
+else:
+	from urllib.parse   import quote
+	from urllib.request import urlopen,Request
+
+	
 
 
 
-''' To do : 
-		1. Testing 
-'''
+
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -37,12 +48,12 @@ class bcolors:
 
 
 def getURL(songInput):	
-	print bcolors.YELLOW
-	songInput = songInput.decode('utf-8')
+	print(bcolors.YELLOW)
+	
 	prompt_songInput = songInput
 	urls_list = OrderedDict()
 	num = 0			   #List of songs index
-	print '\n'
+	print('\n')
 	array = list(songInput)
 	for i in range(0,len(songInput)):
 		if array[i] ==' ':
@@ -56,50 +67,50 @@ def getURL(songInput):
 
 	for i in soup.findAll('a',{'rel' : YT_Class}): #In all Youtube Search Results
 		link = 'https://www.youtube.com' + (i.get('href'))
-		link_title = (i.get('title')).encode('utf-8')
+		link_title = (i.get('title'))
 		urls_list.update({link_title:link}) #Adds title and song url to dictionary
 
 		
-		print '#'+str(num+1)+' ', #Prints list
-		print link_title
+		print('# %s %s'%(str(num+1),link_title)) #Prints list
+		
 
 
 		num = num + 1
 
 
-	url,title = prompt(urls_list,prompt_songInput.encode('utf-8')) #Gets the demanded song title and url
+	url,title = prompt(urls_list,prompt_songInput) #Gets the demanded song title and url
 
-	print bcolors.ENDC
+	print(bcolors.ENDC)
 
 	return url,title #Returns Name of Song and URL of Music Video
 
 def prompt(url,songInput): 
-	x = int(raw_input('\nEnter song number > '))
+	x = int(input('\nEnter song number > '))
 	x = x - 1
-	link = url.values()[x]
-	title = url.keys()[x]
+	link = list(url.values())[x]
+	title = list(url.keys())[x]
 	system('clear')
-	print 'Download Song: ',
-	print title,
-	print bcolors.UNDERLINE
-	print 'Y/N?'
-	print bcolors.ENDC
-	x = raw_input('>')
+	print('Download Song: ', end=' ')
+	print(title, end=' ')
+	print(bcolors.UNDERLINE)
+	print('Y/N?')
+	print(bcolors.ENDC)
+	x = input('>')
 	if x == 'Y' or x == 'y':
 		pass
 	elif x == 'N' or x == 'n':
 		getURL(songInput)
 	else:
-		print 'Invalid input'
+		print('Invalid input')
 		exit()
 
 	return link,title
 
 
 def downloadSong(song_YT_URL, title):
-	title = title.decode('utf-8')
-	initial_title = (title+'-'+song_YT_URL[32:]+'.mp3').encode('utf-8')
-	title = (title + '.mp3').encode('utf-8')
+	title = title
+	initial_title = (title+'-'+song_YT_URL[32:]+'.mp3')
+	title = (title + '.mp3')
 
 	ydl_opts = {
 		'format': 'bestaudio/best',
@@ -115,16 +126,15 @@ def downloadSong(song_YT_URL, title):
 
 	try:	
 		rename(initial_title,title) #Renames file to song title
-	except Exception as e:
-		print bcolors.FAIL
-		print "Could not rename the file."
-		print e
-		print bcolors.ENDC
+	except Exception:
+		print(bcolors.FAIL)
+		print("Could not rename the file.")
+		print(bcolors.ENDC)
 		pass
 
 
 def getDetails(songName):
-	print bcolors.FAIL
+	print(bcolors.FAIL)
 	year =""
 	timeout = 10
 	title = songName
@@ -154,16 +164,16 @@ def getDetails(songName):
 			title = title[1:-8]
 			year = title[-8:]
 		except Exception:
-			print "I couldn't reset the song title, would you like to manually enter it? (Y/N) : ",
+			print("I couldn't reset the song title, would you like to manually enter it? (Y/N) : ", end=' ')
 			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
 				check = stdin.readline()
 			else:
-   				print "No input. I'll just move on"
+   				print("No input. I'll just move on")
    				check = 'N'
 
 			if check == 'Y\n' or check =='y\n':
-				title = raw_input("Enter song title : ")
+				title = input("Enter song title : ")
 				year =""
 			else:
 				title = songName
@@ -176,16 +186,16 @@ def getDetails(songName):
 		try:
 			artist = divi_title.contents[1].getText()
 		except Exception:
-			print "I couldn't find artist name, would you like to manually enter it? (Y/N) : ",
+			print("I couldn't find artist name, would you like to manually enter it? (Y/N) : ", end=' ')
 			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
 				check = stdin.readline()
 			else:
-   				print "No input. I'll just move on"
+   				print("No input. I'll just move on")
    				check = 'N'
 
 			if check == 'Y\n' or check =='y\n':
-				artist = raw_input("Enter artist name : ")
+				artist = input("Enter artist name : ")
 			else:
 				artist = "Unknown"
 
@@ -194,29 +204,29 @@ def getDetails(songName):
 			album = album[:-7]
 
 		except Exception:
-			print "I couldn't find the album name, would you like to manually enter it? (Y/N) : ",
+			print("I couldn't find the album name, would you like to manually enter it? (Y/N) : ", end=' ')
 			rlist, _, _ = select([stdin], [], [], 10)
 			if rlist:
 				check = stdin.readline()
 			else:
-   				print "No input. I'll just move on"
+   				print("No input. I'll just move on")
    				check = 'N'
 
 			if check == 'Y\n' or check =='y\n':
-				album = raw_input("Enter album name : ")
+				album = input("Enter album name : ")
 			else:
 				album = songName
 
 
 	except Exception:
 		
-		print "I couldn't find song details, would you like to manually enter them? (Y/N) : "
+		print("I couldn't find song details, would you like to manually enter them? (Y/N) : ")
 
 		rlist, _, _ = select([stdin], [], [], 10)
 		if rlist:
 			check = stdin.readline()
 		else:
-   			print "No input. I'll just move on"
+   			print("No input. I'll just move on")
    			check = "N"
    			
 
@@ -224,15 +234,15 @@ def getDetails(songName):
 
 		if check == 'Y\n' or check =='y\n':
 			
-			album = raw_input("Enter album name : ")
-			title = raw_input("Enter song title : ")
-			artist = raw_input("Enter song artist : ")
+			album = input("Enter album name : ")
+			title = input("Enter song title : ")
+			artist = input("Enter song artist : ")
 		else:
 			album = songName
 			title = songName
 			artist = "Unknown"
 
-		print bcolors.ENDC
+		print(bcolors.ENDC)
 
 
 	
@@ -242,23 +252,21 @@ def getDetails(songName):
 
 
 def getAlbumArt(Album_Name): 
-	print bcolors.OKGREEN
-	print "\nFetching Album Art.."
-	print bcolors.ENDC
+	print(bcolors.OKGREEN)
+	print("\nFetching Album Art..")
+	print(bcolors.ENDC)
 
 	Album_Name = Album_Name + " Album Art"
 	Album_Name = Album_Name.split()
 	Album_Name ='+'.join(Album_Name)
-	Album_Name = Album_Name.encode('utf-8')
 	
-	url = ("https://www.google.co.in/search?q="+Album_Name+"&source=lnms&tbm=isch")
 	
-
+	url = ("https://www.google.co.in/search?q="+quote(Album_Name.encode('utf-8'))+"&source=lnms&tbm=isch")
 	header = {'User-Agent':"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36"
 	}
-	url = url.decode('ascii','ignore')
+	
 
-	soup = BeautifulSoup(urllib2.urlopen(urllib2.Request(url,headers=header)),"html.parser")
+	soup = BeautifulSoup(urlopen(Request(url,headers=header)),"html.parser")
 	
 
 	a = soup.find("div",{"class":"rg_meta"})
@@ -267,7 +275,7 @@ def getAlbumArt(Album_Name):
 	return albumArt_url
 
 def add_AlbumArt(albumArt_url, title): 
-	img = urllib2.urlopen(albumArt_url) #Gets album art from url
+	img = urlopen(albumArt_url) #Gets album art from url
 
 	try:
 		audio = MP3(title,ID3=ID3)
@@ -281,25 +289,25 @@ def add_AlbumArt(albumArt_url, title):
 				encoding=3, #UTF-8
 				mime='image/png',
 				type=3, # 3 is for album art
-				desc=u'Cover',
+				desc='Cover',
 				data=img.read() #Reads and adds album art
 				)
 			)
 		audio.save()
 
 	except Exception:
-		print bcolors.FAIL
-		print "An Error occured while adding the album art "
-		print bcolors.ENDC
+		print(bcolors.FAIL)
+		print("An Error occured while adding the album art ")
+		print(bcolors.ENDC)
 		pass
 
 	
 
 def add_Details(fname,new_title,artist,album,year = ""):
 
-	print bcolors.OKGREEN
-	print "Adding song details.."
-	print bcolors.ENDC
+	print(bcolors.OKGREEN)
+	print("Adding song details..")
+	print(bcolors.ENDC)
 
 	try:
 		tags = ID3(fname)
@@ -313,7 +321,7 @@ def add_Details(fname,new_title,artist,album,year = ""):
 		tags.save(fname)
 		
 	except Exception:
-		print "Couldn't add song details"
+		print("Couldn't add song details")
 		pass
 		
 
@@ -321,40 +329,39 @@ def add_Details(fname,new_title,artist,album,year = ""):
 
 
 def singleMode():
-	print bcolors.HEADER
-	song_input = raw_input('Enter Song Name/Keywords : ')
-	print bcolors.ENDC
+	print(bcolors.HEADER)
+	song_input = input('Enter Song Name : ')
+	print(bcolors.ENDC)
 
 
 	YT_URL,title = getURL(song_input) #Gets YT url
 
-	print bcolors.GRAY
+	print(bcolors.GRAY)
 	downloadSong(YT_URL,title) #Saves as .mp3 file
-	print bcolors.ENDC
+	print(bcolors.ENDC)
 
 	artist_name,album_name,new_title,year = getDetails(title)
 	album_art_url = getAlbumArt(album_name) #Gets album art
 
-	title = title.decode('utf-8')
+	
 	title = title + '.mp3'
-	title = title.encode('utf-8')
+	
 
 	add_AlbumArt(album_art_url,title)
 	add_Details(title,new_title,artist_name,album_name,year)
 
 	
 
-	print bcolors.OKBLUE
-	print "Successfully downloaded : ",
-	print new_title 
-	print bcolors.ENDC	
+	print(bcolors.OKBLUE)
+	print("Successfully downloaded : %s " %new_title) 
+	print(bcolors.ENDC)	
 
 
 
 	
 
 
-'''Main Method'''
+
 
 system('clear') 
 
