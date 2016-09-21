@@ -1,4 +1,4 @@
-# Download-Music
+# MusicNow
 ##### Enter song name and download the song with album art and song details.
 
 ### Dependencies
@@ -17,7 +17,7 @@ $ sudo apt-get install libav-tools
 
 ### Installation
 ```sh
-$ sudo pip install download-music
+$ sudo pip install musicnow
 ```
 
 
@@ -25,9 +25,9 @@ $ sudo pip install download-music
 ### How to use
 
 ```sh
-$ download-music
+$ musicnow
 
-> Enter Song Name/Keywords : When the levee breaks
+> Enter Song Name : When the levee breaks
 
 #1  When the Levee Breaks Lyrics
 #2  When The Levee Breaks Led Zeppelin +Lyrics
