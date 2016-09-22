@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(name='musicnow',
-      version='0.5',
+      version='0.6',
       description='Lets you download music with album art and details',
-      url='https://github.com/lakshaykalbhor/Download-Music',
+      url='https://github.com/lakshaykalbhor/MusicNow',
       author='Lakshay Kalbhor',
       author_email='lakshaykalbhor@gmail.com',
       license='MIT',
@@ -16,7 +16,5 @@ setup(name='musicnow',
       ],
       entry_points={
         'console_scripts': ['musicnow=musicnow.command_line:main'],
-      },
-      
-      zip_safe=False
+      }
       )
