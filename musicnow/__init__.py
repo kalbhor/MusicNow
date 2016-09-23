@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 from __future__ import print_function
 from os import system, rename, listdir, curdir
 from sys import version_info, stdin
@@ -100,6 +101,8 @@ def prompt(YoutubeList):
 
 def downloadSong(songURL, songTitle):
 
+    FileName = None
+
     print(bcolors.ENDC)
 
     ydl_opts = {
@@ -115,14 +118,20 @@ def downloadSong(songURL, songTitle):
         ydl.download([songURL])  # Downloads audio using youtube-dl
 
     try:
+
         files = listdir(curdir)
         for songs in files:
-            match = re.match(r'%s-.*.mp3' % songTitle, songs)
-            if match != None:
-                FileName = match.group(0)
+            re_found = re.match(re.escape(songTitle) +
+                                r'.*\.mp3$', songs, re.UNICODE)
+            if re_found:
+                FileName = re_found.group()
                 break
 
-        rename(FileName, songTitle + '.mp3')  # Renames file to song title
+        if FileName != None:
+            rename(FileName, songTitle + '.mp3')  # Renames file to song title
+        else:
+            FileName = (songTitle + '-' + songURL[32:] + '.mp3')
+            rename(FileName, songTitle + '.mp3')
     except Exception as e:
         print(bcolors.FAIL)
         print("Could not rename the file : %s" % e)
@@ -220,13 +229,14 @@ def getAlbumArt(album):
 
     a = soup.find("div", {"class": "rg_meta"})
     albumArt = json.loads(a.text)["ou"]
-
     return albumArt
 
 
 def add_AlbumArt(albumArt, songTitle):
-
-    img = urlopen(albumArt)  # Gets album art from url
+    try:
+        img = urlopen(albumArt)  # Gets album art from url
+    except:
+        print("Could not add album art")
     try:
         audio = MP3(songTitle, ID3=ID3)
         try:
@@ -271,6 +281,11 @@ def add_Details(FileName, songTitle, artist, album):
         print(bcolors.FAIL)
         print("Couldn't add song details : %s" % e)
         print(bcolors.ENDC)
+        pass
+
+    try:
+        rename(FileName, songTitle + '.mp3')
+    except:
         pass
 
 
