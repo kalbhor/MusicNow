@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from os import system, rename
+from os import system, rename, listdir, curdir
 from sys import version_info, stdin
 from collections import OrderedDict
 from select import select
 from time import sleep
+
+import re
 
 from bs4 import BeautifulSoup
 import requests
@@ -99,8 +101,6 @@ def prompt(YoutubeList):
 def downloadSong(songURL, songTitle):
 
     print(bcolors.ENDC)
-    FileName = (songTitle + '-' + songURL[32:] + '.mp3')
-    songTitle = (songTitle + '.mp3')
 
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -115,7 +115,14 @@ def downloadSong(songURL, songTitle):
         ydl.download([songURL])  # Downloads audio using youtube-dl
 
     try:
-        rename(FileName, songTitle)  # Renames file to song title
+        files = listdir(curdir)
+        for songs in files:
+            match = re.match(r'%s-.*.mp3' % songTitle, songs)
+            if match != None:
+                FileName = match.group(0)
+                break
+
+        rename(FileName, songTitle + '.mp3')  # Renames file to song title
     except Exception as e:
         print(bcolors.FAIL)
         print("Could not rename the file : %s" % e)
@@ -162,7 +169,7 @@ def getDetails(songName):
             album = songName
 
     except Exception:
-
+        check = 'n\n'
         print(
             "Couldn't find song details, would you like to manually enter them? (Y/N) : ")
         rlist, _, _ = select([stdin], [], [], 10)
@@ -183,6 +190,11 @@ def getDetails(songName):
             album = input("Enter album name : ")
             songTitle = input("Enter song title : ")
             artist = input("Enter song artist : ")
+
+        else:
+            album = songName
+            songTitle = songName
+            artist = "Unknown"
 
         print(bcolors.ENDC)
 
