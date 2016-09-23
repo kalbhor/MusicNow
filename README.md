@@ -19,12 +19,12 @@ $ sudo apt-get install libav-tools
 
 ##### Python 2.7
 ```sh
-$ sudo pip install musicnow
+$ pip install musicnow
 ```
 
 ##### Python 3.4
 ```sh
-$ sudo pip3 install musicnow
+$ pip3 install musicnow
 ```
 
 
