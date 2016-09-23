@@ -6,3 +6,6 @@
 
 # Python egg metadeta
 /*.egg-info
+
+# Trash
+.DS_Store
