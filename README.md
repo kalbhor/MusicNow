@@ -35,24 +35,56 @@ $ pip3 install musicnow
 ```sh
 $ musicnow
 
-> Enter Song Name : When the levee breaks
+Enter Song Name : Dream Theatre Vacant
 
-#1  When the Levee Breaks Lyrics
-#2  When The Levee Breaks Led Zeppelin +Lyrics
-#3  Led Zeppelin - When The Levee Breaks
-#4  Led Zeppelin When The Levee Breaks by Zepparella
 
-Enter song number >  1
+(1) Dream Theater - Vacant + Lyrics
+(2) Dream Theater - Vacant & The Answer Lies Within (Score)
+(3) Dream Theater - Vacant + Stream of Consciousness
+(4) Dream Theater - Vacant (Subtítulos en Español)
+(5) Dream Theater - Vacant (Instrumental)
 
-Download Song:  When the Levee Breaks Lyrics 
+
+Enter song number > 1
+Download Song:  Dream Theater - Vacant + Lyrics
 Y/N?
 >Y
 
+
 Fetching Album Art..
-Adding song details..
 
-Successfully downloaded :  When the Levee Breaks
+Adding Details..
 
+Lyrics : 
+Hey you, Hey you
+I'm right here
+Conscience fading
+Can't get through
+
+Oh Lord
+Helpless
+Confused
+Head swayed
+Eyes glazed
+And mine teared
+
+She's losing control
+What can I do
+Her vacant eyes
+Black holes
+Am I losing you
+
+
+
+Song name : Vacant
+
+Artist : Dream Theater
+
+Album : Train Of Thought
+
+
+
+✓ Successfully downloaded : Vacant
 ```
 
 License
