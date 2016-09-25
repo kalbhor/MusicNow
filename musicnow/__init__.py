@@ -15,7 +15,7 @@ import json
 import youtube_dl
 
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, APIC
+from mutagen.id3 import ID3, TIT2, TALB, TPE1, TPE2, APIC, USLT
 
 
 if version_info[0] < 3:
@@ -156,6 +156,11 @@ def getDetails(songName):
 
         AlbumDiv = soup.find('div', {'id': 'albums'})
         TitleDiv = soup.find('div', {'id': 'content_artist'}).find('h1')
+        try:
+            lyrics = soup.find('div', {'id': 'lyrics'}).text
+            lyrics = lyrics[3:]
+        except:
+            lyrics = "Couldn't find lyrics"
 
         try:
             songTitle = TitleDiv.contents[0]
@@ -175,7 +180,7 @@ def getDetails(songName):
             album = album[:-7]
         except Exception as e:
             print("Couldn't find the album name : %s" % e, end=' ')
-            album = songName
+            album = artist
 
     except Exception:
         check = 'n\n'
@@ -207,7 +212,7 @@ def getDetails(songName):
 
         print(bcolors.ENDC)
 
-    return artist, album, songTitle
+    return artist, album, songTitle, lyrics
 
 
 def getAlbumArt(album):
@@ -262,18 +267,21 @@ def add_AlbumArt(albumArt, songTitle):
         pass
 
 
-def add_Details(FileName, songTitle, artist, album):
+def add_Details(FileName, songTitle, artist, album, lyrics):
 
     print(bcolors.OKGREEN)
-    print("Adding song details..")
+    print("\n\nAdding Details \n\n Lyrics : %s \n\n Song name : %s \n\n Artist : %s \n\n Album : %s \n\n " % (
+        lyrics, songTitle, artist, album))
     print(bcolors.ENDC)
 
     try:
         tags = ID3(FileName)
         tags["TALB"] = TALB(encoding=3, text=album)
         tags["TIT2"] = TIT2(encoding=3, text=songTitle)
-        tags["TPE1"] = TPE1(encoding=3, text=artist)
-        tags["TPE2"] = TPE2(encoding=3, text="Various Artists")
+        tags["TPE1"] = TPE1(encoding=3, text="")
+        tags["TPE2"] = TPE2(encoding=3, text=artist)
+        tags["USLT::'eng'"] = (
+            USLT(encoding=3, lang=u'eng', desc=u'desc', text=lyrics))
 
         tags.save(FileName)
 
@@ -301,13 +309,13 @@ def singleMode():
     downloadSong(songURL, FileName)  # Saves as .mp3 file
     print(bcolors.ENDC)
 
-    artist, album, songName = getDetails(FileName)
+    artist, album, songName, lyrics = getDetails(FileName)
     albumArt = getAlbumArt(album)  # Gets album art
 
     FileName = FileName + '.mp3'
 
     add_AlbumArt(albumArt, FileName)
-    add_Details(FileName, songName, artist, album)
+    add_Details(FileName, songName, artist, album, lyrics)
 
     print(bcolors.OKBLUE)
     print("%s Successfully downloaded : %s " % (tick, songName))
