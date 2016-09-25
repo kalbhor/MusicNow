@@ -270,9 +270,10 @@ def add_AlbumArt(albumArt, songTitle):
 def add_Details(FileName, songTitle, artist, album, lyrics):
 
     print(bcolors.OKGREEN)
-    print("\n\nAdding Details \n\n Lyrics : %s \n\n Song name : %s \n\n Artist : %s \n\n Album : %s \n\n " % (
-        lyrics, songTitle, artist, album))
+    print("\n\nAdding Details..")
     print(bcolors.ENDC)
+    print(" \n\nLyrics :\n %s \n\nSong name : %s \n\nArtist : %s \n\nAlbum : %s \n\n " % (
+        lyrics, songTitle, artist, album))
 
     try:
         tags = ID3(FileName)
