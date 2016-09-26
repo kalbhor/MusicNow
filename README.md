@@ -1,6 +1,7 @@
 # MusicNow
 ##### Download music with album art and details.
 
+
 ### Dependencies
 
 ##### Mac
@@ -27,79 +28,23 @@ $ pip install musicnow
 $ pip3 install musicnow
 ```
 
-
-
-
 ### How to use
 ```sh
 $ musicnow
+```
+![](http://im2.ezgif.com/tmp/ezgif-1830029921.gif)
 
-
-Enter Song Name : Vacant - Dream Theatre
-
-(1) Dream Theater - Vacant + Lyric
-(2) Dream Theater - Vacant & The Answer Lies Within (Score)
-(3) Dream Theater - Vacant + Stream of Consciousness
-(4) Dream Theater - Vacant (Subtítulos en Español)
-(5) Jordan Rudess - Vacant (Dream Theater cover)
-(6) Dream Theater - Vacant (Instrumental)
-(7) Vacant by Dream Theatre ~ Lyrics
-(8) Dream Theater - Vacant (Split Screen Collaboration Cover)
-(9) Dream Theater - Vacant - Sub. Español
-(10) Dream Theater  - Vacant - Karaoke - Audio Original + Download
-
-
-Enter song number > 1
-Download Song:  Dream Theater - Vacant + Lyrics
-Y/N?
-
->y
-
-Fetching Album Art..
-
-
-Adding Details..
-
-
-
-Lyrics :
-Hey you, Hey you
-I'm right here
-Conscience fading
-Can't get through
-
-Oh Lord
-Helpless
-Confused
-Head swayed
-Eyes glazed
-And mine teared
-
-She's losing control
-What can I do
-Her vacant eyes
-Black holes
-Am I losing you
-
-
-
-Song name : Vacant
-
-Artist : Dream Theater
-
-Album : Train Of Thought
-
-
-✓ Successfully downloaded : Vacant
 
 
 License
 ----
+The MIT License (MIT)
+Copyright (c) 2016 Lakshay Kalbhor
 
-MIT
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
