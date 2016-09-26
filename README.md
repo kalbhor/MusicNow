@@ -1,6 +1,9 @@
 # MusicNow
 ##### Download music with album art and details.
 
+----
+
+
 ### Dependencies
 
 ##### Mac
@@ -14,6 +17,8 @@ $ brew install libav
 ```sh
 $ sudo apt-get install libav-tools
 ```
+----
+
 
 ### Installation
 
@@ -26,8 +31,7 @@ $ pip install musicnow
 ```sh
 $ pip3 install musicnow
 ```
-
-
+----
 
 
 ### How to use
@@ -35,6 +39,8 @@ $ pip3 install musicnow
 $ musicnow
 ```
 ![](http://im2.ezgif.com/tmp/ezgif-1830029921.gif)
+
+
 
 License
 ----
