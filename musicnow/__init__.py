@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-from os import system, rename, listdir, curdir
-from sys import version_info, stdin
+from os import system, rename, listdir, curdir, name
+from sys import version_info, stdin, platform
 from collections import OrderedDict
 from select import select
 from time import sleep
@@ -26,20 +26,37 @@ else:
     from urllib.parse import quote
     from urllib.request import urlopen, Request
 
+if name == 'nt':
+    class bcolors:
+        HEADER = ''
+        OKBLUE = ''
+        OKGREEN = ''
+        WARNING = ''
+        FAIL = ''
+        ENDC = ''
+        BOLD = ''
+        UNDERLINE = ''
+        GRAY = ''
+        YELLOW = ''
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[32m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    GRAY = '\033[30m'
-    YELLOW = '\033[33m'
+    tick = ''
 
-tick = u'\u2713'
+
+else:
+    class bcolors:
+        HEADER = '\033[95m'
+        OKBLUE = '\033[94m'
+        OKGREEN = '\033[32m'
+        WARNING = '\033[93m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+        GRAY = '\033[30m'
+        YELLOW = '\033[33m'
+
+    tick = u'\u2713'
+
 
 
 def getURL(songInput):
@@ -272,7 +289,7 @@ def add_Details(FileName, songTitle, artist, album, lyrics):
     print(bcolors.OKGREEN)
     print("\n\nAdding Details..")
     print(bcolors.ENDC)
-    print(" \n\nLyrics :\n %s \n\nSong name : %s \n\nArtist : %s \n\nAlbum : %s \n\n " % (
+    print(" \n\nLyrics :\n%s \n\nSong name : %s \n\nArtist : %s \n\nAlbum : %s \n\n " % (
         lyrics, songTitle, artist, album))
 
     try:
@@ -324,3 +341,4 @@ def singleMode():
 
 
 system('clear')
+#singleMode()
