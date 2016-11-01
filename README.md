@@ -32,7 +32,7 @@ $ pip3 install musicnow
 ```sh
 $ musicnow
 ```
-![](http://im2.ezgif.com/tmp/ezgif-1830029921.gif)
+![](https://media.giphy.com/media/3oriO2m4SAjRVKeWgE/source.gif)
 
 
 
