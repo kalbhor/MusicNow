@@ -1,5 +1,5 @@
 # MusicNow
-[![PyPI](https://img.shields.io/pypi/v/nine.svg?style=flat-square)](https://pypi.python.org/pypi/musicnow)
+[![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)](https://pypi.python.org/pypi/musicnow)
 ##### Download music with album art and details.
 
 
