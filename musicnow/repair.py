@@ -7,7 +7,7 @@ https://github.com/lakshaykalbhor/MusicRepair
 
 from . import albumsearch
 from . import improvename
-from .import log
+from . import log
 
 from os import rename
 import difflib

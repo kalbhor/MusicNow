@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='musicnow',
-      version='2.6',
+      version='2.7',
       description='Lets you download music with album art and metadata',
       url='https://github.com/lakshaykalbhor/MusicNow',
       author='Lakshay Kalbhor',
@@ -16,6 +16,8 @@ setup(name='musicnow',
           'spotipy',
           'six',
           'colorama',
+          'argparse',
+
       ],
       entry_points={
         'console_scripts': ['musicnow=musicnow.command_line:main'],
