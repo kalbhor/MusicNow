@@ -33,11 +33,12 @@ $ pip3 install musicnow
 ```sh
 $ musicnow
 ```
-![](https://media.giphy.com/media/3oriO2m4SAjRVKeWgE/source.gif)
 (Outdated, will update soon)
+![](https://media.giphy.com/media/3oriO2m4SAjRVKeWgE/source.gif)
+
 
 ### Options 
-```sh
+```
 $ musicnow --help
 
 usage: musicnow [-h] [-m MULTIPLE_FILE] [-a]
