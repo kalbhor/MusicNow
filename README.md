@@ -34,8 +34,23 @@ $ pip3 install musicnow
 $ musicnow
 ```
 ![](https://media.giphy.com/media/3oriO2m4SAjRVKeWgE/source.gif)
+(Outdated, will update soon)
 
+### Options 
+```sh
+$ musicnow --help
 
+usage: musicnow [-h] [-m MULTIPLE_FILE] [-a]
+
+Download songs with album art and metadata!
+
+optional arguments:
+  -h, --help            show this help message and exit
+  
+  -m                    Download multiple songs from a text file list
+                        
+  -a, --auto            Automatically chooses top result
+```
 
 License
 ----
