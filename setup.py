@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(name='musicnow',
-      version='1.2',
-      description='Lets you download music with album art and details',
+      version='2.6',
+      description='Lets you download music with album art and metadata',
       url='https://github.com/lakshaykalbhor/MusicNow',
       author='Lakshay Kalbhor',
       author_email='lakshaykalbhor@gmail.com',
@@ -12,7 +12,10 @@ setup(name='musicnow',
           'youtube-dl',
           'bs4',
           'mutagen',
-          'requests'
+          'requests',
+          'spotipy',
+          'six',
+          'colorama',
       ],
       entry_points={
         'console_scripts': ['musicnow=musicnow.command_line:main'],
