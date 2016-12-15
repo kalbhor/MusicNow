@@ -1,5 +1,6 @@
 # MusicNow
 [![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)](https://pypi.python.org/pypi/musicnow)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ##### Download music with album art and details.
 
 
