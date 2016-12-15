@@ -9,7 +9,9 @@
 
 <br>
 ___
-[![MusicNow](https://s27.postimg.org/bkz6sum2b/Final.png)](https://postimg.org/image/avgeghlin/)<br>
+
+<img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="702px" height="450px" />
+<br>
 ___
 ### Dependencies
 
