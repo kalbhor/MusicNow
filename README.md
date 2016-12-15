@@ -10,7 +10,7 @@
 <br>
 ___
 
-<img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="702px" height="450px" />
+<div style="text-align:center"><img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="702px" height="450px" /></div>
 <br>
 ___
 ### Dependencies
