@@ -10,7 +10,7 @@
 <br>
 ___
 <p align="center">
-<img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="1053px" height="675px" />
+<img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="702px" height="450px" />
 </p>
 <br>
 ___
@@ -27,6 +27,8 @@ $ brew install libav
 ```sh
 $ sudo apt-get install libav-tools
 ```
+##### Windows
+[To install libav](https://github.com/NixOS/nixpkgs/issues/5236)
 
 ### Installation
 
