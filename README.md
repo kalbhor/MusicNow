@@ -47,8 +47,8 @@ ___
 ```sh
 $ musicnow
 ```
-(Outdated, will update soon)
-![](https://media.giphy.com/media/3oriO2m4SAjRVKeWgE/source.gif)
+
+[![Usage](https://s18.postimg.org/53imrt015/Screen_Shot_2016_12_11_at_1_42_02_AM.png)](https://www.youtube.com/watch?v=qtBTKUyWTgc "MusicNow - Usage")
 
 <br>
 ___
