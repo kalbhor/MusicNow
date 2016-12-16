@@ -68,7 +68,7 @@ optional arguments:
   -a, --auto            Automatically chooses top result
 ```
 <br>
-----
+
 License
 ----
 The MIT License (MIT)
