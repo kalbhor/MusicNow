@@ -9,9 +9,9 @@
 
 <br>
 
-<p align="center">
+
 <img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="800px" height="337px" />
-</p>
+
 <br>
 ----
 ### Dependencies
