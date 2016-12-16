@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='musicnow',
-      version='2.7',
+      version='2.8',
       description='Lets you download music with album art and metadata',
       url='https://github.com/lakshaykalbhor/MusicNow',
       author='Lakshay Kalbhor',

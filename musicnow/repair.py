@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from mutagen.id3 import ID3, APIC, USLT, _util
 from mutagen.mp3 import EasyMP3
 from mutagen import File
-
+import requests
 import spotipy
 
 if six.PY2:
@@ -49,7 +49,7 @@ def matching_details(song_name, song_title, artist):
         return False, (match_name + match_title) / 2
 
 
-def get_lyrics(song_name):
+def get_lyrics_letssingit(song_name):
     '''
     Scrapes the lyrics of a song since spotify does not provide lyrics
     takes song title as arguement
@@ -79,6 +79,32 @@ def get_lyrics(song_name):
 
     return lyrics
 
+def get_lyrics_genius(song_title):
+    '''
+    Scrapes the lyrics from Genius.com
+    '''
+    base_url = "http://api.genius.com"
+    headers = {'Authorization': 'Bearer (API KEY)'}
+    search_url = base_url + "/search"
+    data = {'q': song_title}
+
+    response = requests.get(search_url, data=data, headers=headers)
+    json = response.json()
+    song_api_path = json["response"]["hits"][0]["result"]["api_path"]
+
+    song_url = base_url + song_api_path
+    response = requests.get(song_url, headers=headers)
+    json = response.json()
+    path = json["response"]["song"]["path"]
+    page_url = "http://genius.com" + path
+
+    page = requests.get(page_url)
+    soup = BeautifulSoup(page.text, "html.parser")
+    div = soup.find('div',{'class': 'song_body-lyrics'})
+    lyrics = div.find('p').getText()
+  
+    return lyrics
+
 
 def get_details_spotify(song_name):
     '''
@@ -97,7 +123,12 @@ def get_details_spotify(song_name):
                  ['name'])  # Parse json dictionary
         artist = (results['tracks']['items'][0]['album']['artists'][0]['name'])
         song_title = (results['tracks']['items'][0]['name'])
-        lyrics = get_lyrics(song_title)
+        try:
+            log_indented("* Finding lyrics from Genius.com")
+            lyrics = get_lyrics_genius(song_title)
+        except:
+            log_error("* Could not find lyrics from Genius.com, trying something else")
+            lyrics = get_lyrics_letssingit(song_title)
 
         match_bool, score = matching_details(song_name, song_title, artist)
         if match_bool:
