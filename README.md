@@ -8,12 +8,12 @@
 * Changes file name to "{artist} - {title}".
 
 <br>
-___
+
 <p align="center">
 <img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="800px" height="337px" />
 </p>
 <br>
-___
+----
 ### Dependencies
 
 ##### Mac
@@ -42,7 +42,7 @@ $ pip install musicnow
 $ pip3 install musicnow
 ```
 <br>
-___
+----
 ### How to use
 ```sh
 $ musicnow
@@ -51,7 +51,7 @@ $ musicnow
 [![Usage](https://s30.postimg.org/6a34gq4m9/image.png)](https://www.youtube.com/watch?v=qtBTKUyWTgc "MusicNow - Usage")
 
 <br>
-___
+----
 ### Options 
 ```
 $ musicnow --help
@@ -68,7 +68,7 @@ optional arguments:
   -a, --auto            Automatically chooses top result
 ```
 <br>
-___
+----
 License
 ----
 The MIT License (MIT)
