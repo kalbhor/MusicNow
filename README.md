@@ -10,7 +10,7 @@
 <br>
 ___
 <p align="center">
-<img src="https://s27.postimg.org/bkz6sum2b/Final.png" width="702px" height="450px" />
+<img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="800px" height="337px" />
 </p>
 <br>
 ___
