@@ -3,7 +3,6 @@
 from . import repair
 from . import log
 
-import sys
 import argparse
 from os import system, rename, listdir, curdir, name
 from os.path import basename
