@@ -281,10 +281,10 @@ def fix_music(file_name):
 
     try:
         log.log_indented('* Trying to extract album art from Google.com')
-        albumart = albumsearch.img_search_google(album)
+        albumart = albumsearch.img_search_google(artist+' '+album)
     except Exception:
         log.log_indented('* Trying to extract album art from Bing.com')
-        albumart = albumsearch.img_search_bing(album)
+        albumart = albumsearch.img_search_bing(artist+' '+album)
 
     if match_bool:
         add_albumart(albumart, file_name)

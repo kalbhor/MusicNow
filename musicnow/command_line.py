@@ -12,6 +12,7 @@ import re
 from bs4 import BeautifulSoup
 import requests
 import youtube_dl
+import spotipy
 
 import six
 
@@ -25,8 +26,27 @@ elif six.PY3:
 
 YOUTUBECLASS = 'spf-prefetch'
 
+def get_tracks_from_album(album_name):
+    '''
+    Gets tracks from an album using Spotify's API
+    '''
+
+    spotify = spotipy.Spotify()
+
+    album = spotify.search(q='album:'+album_name,limit=1)
+    album_id = album['tracks']['items'][0]['album']['id']
+    results = spotify.album_tracks(album_id=str(album_id))
+    songs = []
+    for items in results['items']:
+        songs.append(items['name'])
+
+    return songs
 
 def get_url(song_input, auto):
+    '''
+    Provides user with a list of songs to choose from
+    returns the url of chosen song.
+    '''
 
     print('\n')
 
@@ -65,6 +85,9 @@ def get_url(song_input, auto):
 
 
 def prompt(youtube_list):
+    '''
+    Prompts for song number from list of songs
+    '''
 
     option = int(input('\nEnter song number > '))
     try:
@@ -91,6 +114,9 @@ def prompt(youtube_list):
 
 
 def download_song(song_url, song_title):
+    '''
+    Downloads song from youtube-dl
+    '''
 
     file_name = None
 
@@ -128,16 +154,50 @@ def download_song(song_url, song_title):
 
 
 def main():
+    '''
+    Starts here, handles arguments
+    '''
+    
     system('clear')
 
     parser = argparse.ArgumentParser(description='Download songs with album art and metadata!')
     parser.add_argument('-m', '--multiple', action='store', dest='multiple_file', help='Download multiple songs from a text file list')
     parser.add_argument('-a', '--auto', action='store_true', help='Automatically chooses top result')
+    parser.add_argument('--album',action='store_true', help='Downloads all songs from an album')
     args = parser.parse_args()
     arg_multiple = args.multiple_file or None
     arg_auto = args.auto or None
+    arg_album = args.album or None
 
-    if arg_multiple:
+    if arg_multiple and arg_album:
+        log.log_error("Can't do both!")
+
+    elif arg_album:
+        album_name = input('Enter album name : ')
+        try:
+            tracks = get_tracks_from_album(album_name)
+            [print(songs) for songs in tracks]
+            confirm = input('\nAre these the songs you want to download? (y/n)\n> ')
+
+        except IndexError:
+            log.log_error("Couldn't find album")
+            exit()
+
+        if confirm.lower() == ('y'):
+            for track_name in tracks:
+                song_url, file_name = get_url(track_name, arg_auto)
+                download_song(song_url, file_name)
+                system('clear')
+                repair.fix_music(file_name + '.mp3')
+
+        elif confirm.lower() == 'n':
+            log.log_error("Sorry, if appropriate results weren't found")
+            exit()
+        else:
+            log.log_error('Invalid Input')
+            exit()
+
+    elif arg_multiple:
     	with open(arg_multiple, "r") as f:
     		file_names = []
     		for line in f:
@@ -159,4 +219,4 @@ def main():
 
 
 if __name__ == '__main__':
-main()
+    main()
