@@ -68,6 +68,10 @@ optional arguments:
   --album               Downloads all songs from an album
 ```
 <br>
+----
+### Disclaimer
+Use at own risk.
+Downloading music with copyrights might be illegal in your country.
 
 License
 ----
