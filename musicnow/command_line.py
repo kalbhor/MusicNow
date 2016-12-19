@@ -117,40 +117,23 @@ def download_song(song_url, song_title):
     '''
     Downloads song from youtube-dl
     '''
-
-    file_name = None
-
+    outtmpl = song_title+'.%(ext)s'
     ydl_opts = {
         'format': 'bestaudio/best',
+        'outtmpl': outtmpl,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
             'preferredquality': '192',
-        }],
+        },
+            {'key': 'FFmpegMetadata'},
+        ],
+
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([song_url])  # Downloads audio using youtube-dl
+        info_dict = ydl.extract_info(song_url, download = True)
 
-    try:
-
-        files = listdir(curdir)
-        for songs in files:
-            re_found = re.match(re.escape(song_title) +
-                                r'.*\.mp3$', songs, re.UNICODE)
-            if re_found:
-                file_name = re_found.group()
-                break
-
-        if file_name != None:
-            # Renames file to song title
-            rename(file_name, song_title + '.mp3')
-        else:
-            file_name = (song_title + '-' + song_url[32:] + '.mp3')
-            rename(file_name, song_title + '.mp3')
-    except Exception:
-        log.log_error("Could not rename the file")
-        pass
 
 
 def main():
