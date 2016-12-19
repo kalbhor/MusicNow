@@ -26,6 +26,7 @@ elif six.PY3:
 
 YOUTUBECLASS = 'spf-prefetch'
 
+
 def get_tracks_from_album(album_name):
     '''
     Gets tracks from an album using Spotify's API
@@ -33,7 +34,7 @@ def get_tracks_from_album(album_name):
 
     spotify = spotipy.Spotify()
 
-    album = spotify.search(q='album:'+album_name,limit=1)
+    album = spotify.search(q='album:' + album_name, limit=1)
     album_id = album['tracks']['items'][0]['album']['id']
     results = spotify.album_tracks(album_id=str(album_id))
     songs = []
@@ -41,6 +42,7 @@ def get_tracks_from_album(album_name):
         songs.append(items['name'])
 
     return songs
+
 
 def get_url(song_input, auto):
     '''
@@ -53,7 +55,8 @@ def get_url(song_input, auto):
     youtube_list = OrderedDict()
     num = 0  # List of songs index
 
-    html = requests.get("https://www.youtube.com/results",params={'search_query':song_input})
+    html = requests.get("https://www.youtube.com/results",
+                        params={'search_query': song_input})
     soup = BeautifulSoup(html.text, 'html.parser')
 
     # In all Youtube Search Results
@@ -69,8 +72,8 @@ def get_url(song_input, auto):
             num = num + 1
 
         elif auto:
-        	print(song_title)
-        	return list(youtube_list.values())[0], list(youtube_list.keys())[0]
+            print(song_title)
+            return list(youtube_list.values())[0], list(youtube_list.keys())[0]
 
     # Checks if YouTube search return no results
     if youtube_list == {}:
@@ -81,7 +84,6 @@ def get_url(song_input, auto):
     song_url, song_title = prompt(youtube_list)
 
     return song_url, song_title  # Returns Name of Song and URL of Music Video
-
 
 
 def prompt(youtube_list):
@@ -117,7 +119,7 @@ def download_song(song_url, song_title):
     '''
     Downloads song from youtube-dl
     '''
-    outtmpl = song_title+'.%(ext)s'
+    outtmpl = song_title + '.%(ext)s'
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': outtmpl,
@@ -132,21 +134,24 @@ def download_song(song_url, song_title):
     }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(song_url, download = True)
-
+        info_dict = ydl.extract_info(song_url, download=True)
 
 
 def main():
     '''
     Starts here, handles arguments
     '''
-    
+
     system('clear')
 
-    parser = argparse.ArgumentParser(description='Download songs with album art and metadata!')
-    parser.add_argument('-m', '--multiple', action='store', dest='multiple_file', help='Download multiple songs from a text file list')
-    parser.add_argument('-a', '--auto', action='store_true', help='Automatically chooses top result')
-    parser.add_argument('--album',action='store_true', help='Downloads all songs from an album')
+    parser = argparse.ArgumentParser(
+        description='Download songs with album art and metadata!')
+    parser.add_argument('-m', '--multiple', action='store', dest='multiple_file',
+                        help='Download multiple songs from a text file list')
+    parser.add_argument('-a', '--auto', action='store_true',
+                        help='Automatically chooses top result')
+    parser.add_argument('--album', action='store_true',
+                        help='Downloads all songs from an album')
     args = parser.parse_args()
     arg_multiple = args.multiple_file or None
     arg_auto = args.auto or None
@@ -160,7 +165,8 @@ def main():
         try:
             tracks = get_tracks_from_album(album_name)
             [print(songs) for songs in tracks]
-            confirm = input('\nAre these the songs you want to download? (y/n)\n> ')
+            confirm = input(
+                '\nAre these the songs you want to download? (y/n)\n> ')
 
         except IndexError:
             log.log_error("Couldn't find album")
@@ -182,18 +188,17 @@ def main():
             exit()
 
     elif arg_multiple:
-    	with open(arg_multiple, "r") as f:
-    		file_names = []
-    		for line in f:
-    			file_names.append(line.rstrip('\n'))
+        with open(arg_multiple, "r") as f:
+            file_names = []
+            for line in f:
+                file_names.append(line.rstrip('\n'))
 
-    	for files in file_names:
+        for files in file_names:
             files = files + ' song'
-    		song_url, file_name = get_url(files, arg_auto)
-    		download_song(song_url, file_name)
-    		system('clear')
-    		repair.fix_music(file_name + '.mp3')
-
+            song_url, file_name = get_url(files, arg_auto)
+            download_song(song_url, file_name)
+            system('clear')
+            repair.fix_music(file_name + '.mp3')
 
     else:
         query = input('Enter Song Name : ')
