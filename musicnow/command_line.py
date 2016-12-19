@@ -168,6 +168,7 @@ def main():
 
         if confirm.lower() == ('y'):
             for track_name in tracks:
+                track_name = track_name + ' song'
                 song_url, file_name = get_url(track_name, arg_auto)
                 download_song(song_url, file_name)
                 system('clear')
@@ -187,6 +188,7 @@ def main():
     			file_names.append(line.rstrip('\n'))
 
     	for files in file_names:
+            files = files + ' song'
     		song_url, file_name = get_url(files, arg_auto)
     		download_song(song_url, file_name)
     		system('clear')

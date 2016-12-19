@@ -84,7 +84,7 @@ def get_lyrics_genius(song_title):
     Scrapes the lyrics from Genius.com
     '''
     base_url = "http://api.genius.com"
-    headers = {'Authorization': 'Bearer (API KEY)'}
+    headers = {'Authorization': 'Bearer (Key)'}
     search_url = base_url + "/search"
     data = {'q': song_title}
 
