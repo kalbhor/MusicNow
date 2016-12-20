@@ -102,9 +102,11 @@ def prompt(youtube_list):
     system('clear')
     print('Download Song: ')
     print(song_title)
-    print('Y/N?')
+    print('Y/n?')
     confirm = input('>')
-    if confirm.lower() == 'y':
+    print type(confirm)
+    print confirm
+    if confirm == '' or confirm.lower() == 'y':
         pass
     elif confirm.lower() == 'n':
         exit()
@@ -164,15 +166,16 @@ def main():
         album_name = input('Enter album name : ')
         try:
             tracks = get_tracks_from_album(album_name)
-            [print(songs) for songs in tracks]
+            for songs in tracks:
+                print songs
             confirm = input(
-                '\nAre these the songs you want to download? (y/n)\n> ')
+                '\nAre these the songs you want to download? (Y/n)\n> ')
 
         except IndexError:
             log.log_error("Couldn't find album")
             exit()
 
-        if confirm.lower() == ('y'):
+        if confirm == '' or confirm.lower() == ('y'):
             for track_name in tracks:
                 track_name = track_name + ' song'
                 song_url, file_name = get_url(track_name, arg_auto)
