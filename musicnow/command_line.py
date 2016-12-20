@@ -104,8 +104,6 @@ def prompt(youtube_list):
     print(song_title)
     print('Y/n?')
     confirm = input('>')
-    print type(confirm)
-    print confirm
     if confirm == '' or confirm.lower() == 'y':
         pass
     elif confirm.lower() == 'n':
@@ -167,7 +165,7 @@ def main():
         try:
             tracks = get_tracks_from_album(album_name)
             for songs in tracks:
-                print songs
+                print(songs)
             confirm = input(
                 '\nAre these the songs you want to download? (Y/n)\n> ')
 
