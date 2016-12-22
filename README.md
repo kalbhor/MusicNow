@@ -47,7 +47,7 @@ $ sudo apt-get install libav-tools
 export GENIUS_LYRICS_KEY=YOUR KEY 
 ```
 
-<img src="https://s29.postimg.org/k4ga1gmsn/Genius_API.png" width="362px" height="408px" />
+<img src="https://s29.postimg.org/k4ga1gmsn/Genius_API.png" width="543px" height="362px" />
 <br>
 
 
