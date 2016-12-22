@@ -38,6 +38,7 @@ $ sudo apt-get install libav-tools
 ### API Keys 
 
 Fetch API keys from [Genius.com][https://genius.com/api-clients]
+<br>
 1. Create an account and register an application. 
 2. Grab Access Token.
 3. Set environment variable in your bashrc/zshrc file.
@@ -50,6 +51,7 @@ export GENIUS_LYRICS_KEY=YOUR KEY
 ```
 
 Fetch image search API keys from [Microsoft.com][https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api]
+<br>
 1. Create an account. 
 2. Grab Access Token.
 3. Set environment variable in your bashrc/zshrc file.
