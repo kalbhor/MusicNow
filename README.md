@@ -39,8 +39,9 @@ Fetch API keys from [Genius.com][https://genius.com/api-clients]
 3. Set environment variable in your bashrc/zshrc file.
 
 <img src="https://s29.postimg.org/420tzead3/Genius_API.png" width="546px" height="408px" />
-<br>  
-``` 
+<br>
+
+```sh 
 export GENIUS_LYRICS_KEY=YOUR KEY 
 ```
 Fetch image search API keys from [Microsoft.com][https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api]
@@ -49,8 +50,9 @@ Fetch image search API keys from [Microsoft.com][https://www.microsoft.com/cogni
 3. Set environment variable in your bashrc/zshrc file.
 
 <img src="https://s29.postimg.org/yibo1if7r/Bing_Key.png" width="1159px" height="215px" />
-<br>  
-``` 
+<br> 
+
+```sh
 export BING_IMG_KEY=YOUR KEY 
 ```
 
