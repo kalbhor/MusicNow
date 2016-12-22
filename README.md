@@ -31,8 +31,12 @@ $ sudo apt-get install libav-tools
 ##### Windows
 [To install libav](https://github.com/NixOS/nixpkgs/issues/5236)
 
+<br>
+----
 
-##### API Keys 
+
+### API Keys 
+
 Fetch API keys from [Genius.com][https://genius.com/api-clients]
 1. Create an account and register an application. 
 2. Grab Access Token.
@@ -44,6 +48,7 @@ Fetch API keys from [Genius.com][https://genius.com/api-clients]
 ```sh 
 export GENIUS_LYRICS_KEY=YOUR KEY 
 ```
+
 Fetch image search API keys from [Microsoft.com][https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api]
 1. Create an account. 
 2. Grab Access Token.
@@ -56,7 +61,8 @@ Fetch image search API keys from [Microsoft.com][https://www.microsoft.com/cogni
 export BING_IMG_KEY=YOUR KEY 
 ```
 
-
+<br>
+----
 
 ### Installation
 
