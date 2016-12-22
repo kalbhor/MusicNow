@@ -9,7 +9,7 @@ from . import albumsearch
 from . import improvename
 from . import log
 
-from os import rename
+from os import rename, environ
 import difflib
 import six
 
@@ -31,6 +31,13 @@ elif six.PY3:
     Py3 = True
 
 LOG_LINE_SEPERATOR = '........................\n'
+
+try:
+    GENIUS_KEY = environ['GENIUS_LYRICS_KEY']
+except KeyError:
+    log.log_error('Warning, GENIUS_LYRICS_KEY not added in environment variables')
+
+
 
 
 def matching_details(song_name, song_title, artist):
@@ -84,7 +91,7 @@ def get_lyrics_genius(song_title):
     Scrapes the lyrics from Genius.com
     '''
     base_url = "http://api.genius.com"
-    headers = {'Authorization': 'Bearer (Key)'}
+    headers = {'Authorization': 'Bearer %s' %(GENIUS_KEY)}
     search_url = base_url + "/search"
     data = {'q': song_title}
 

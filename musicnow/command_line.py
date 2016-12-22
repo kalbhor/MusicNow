@@ -27,6 +27,7 @@ elif six.PY3:
 YOUTUBECLASS = 'spf-prefetch'
 
 
+
 def get_tracks_from_album(album_name):
     '''
     Gets tracks from an album using Spotify's API
