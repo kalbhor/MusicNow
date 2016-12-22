@@ -35,7 +35,7 @@ $ sudo apt-get install libav-tools
 ----
 
 
-### API Keys 
+### APIs Required  
 
 ##### Fetch API keys from [Genius.com](https://genius.com/api-clients)
 
@@ -47,7 +47,7 @@ $ sudo apt-get install libav-tools
 export GENIUS_LYRICS_KEY=YOUR KEY 
 ```
 
-<img src="https://s29.postimg.org/420tzead3/Genius_API.png" width="546px" height="408px" />
+<img src="https://s29.postimg.org/k4ga1gmsn/Genius_API.png" width="362px" height="408px" />
 <br>
 
 
@@ -61,7 +61,7 @@ export GENIUS_LYRICS_KEY=YOUR KEY
 export BING_IMG_KEY=YOUR KEY 
 ```
 
-<img src="https://s29.postimg.org/yibo1if7r/Bing_Key.png" width="1150px" height="215px" />
+<img src="https://s29.postimg.org/yibo1if7r/Bing_Key.png" width="1150px" height="210px" />
 <br>
 ----
 
