@@ -1,43 +1,58 @@
-# MusicNow
-[![PyPI](https://img.shields.io/pypi/pyversions/Django.svg)](https://pypi.python.org/pypi/musicnow)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-##### Download Music with album art and details.
-* Adds Album Art, Artist, Album, lyrics.
-* Fetches data from Spotify.
-* Download entire albums by using '--album' argument.
-* Multiple file mode to download multiple songs continously. 
-* Changes file name to "{artist} - {title}".
+<img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="700px" height="300px" />
 
-<br>
+# MusicRepair
+
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+
+> MusicNow is a python script that downloads music and albums with important tags such as : album name, artist name, lyrics and album art.
+
+## Show :heart:
+
+[![GitHub stars](https://img.shields.io/github/stars/lakshaykalbhor/musicnow.svg?style=social&label=Star)](https://github.com/lakshaykalbhor/musicnow)
+[![GitHub followers](https://img.shields.io/github/followers/lakshaykalbhor.svg?style=social&label=Follow)](https://github.com/lakshaykalbhor)  
+[![Twitter Follow](https://img.shields.io/twitter/follow/lakshayisfunny.svg?style=social)](https://twitter.com/lakshayisfunny)
 
 
-<img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="800px" height="337px" />
+## Table of Contents
 
-<br>
-----
-### Dependencies
+- [Features](#features)
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+  - [PyPI](#pypi)
+  - [Source](#source)
+- [Usage](#usage)
+  - [Options](#options)
+- [Disclaimer](#disclaimer)
+- [Contribute](#contribute)
+- [License](#license)
 
-##### Mac
+## Features
+
+1. Downloads entire songs from youtube.
+2. Fetches lyrics from [Genius](https://www.genius.com)
+3. Fetches metadata from [Spotify](https://www.spotify.com)
+4. Downloads entire albums.
+5. Changes file name to "{artist} - {title}"
+
+
+## Dependencies 
+
+### Mac
 
 ```sh
 $ brew install libav
 ```
 
-
-##### Ubuntu
+### Ubuntu
 ```sh
 $ sudo apt-get install libav-tools
 ```
-##### Windows
-[To install libav](https://github.com/NixOS/nixpkgs/issues/5236)
 
-<br>
-----
+### Windows
+[Install libav](https://github.com/NixOS/nixpkgs/issues/5236)
 
-
-### APIs Required  
-
-##### Fetch API keys from [Genius.com](https://genius.com/api-clients)
+### [Genius API](https://genius.com/api-clients)
 
 1. Create an account and register an application 
 2. Grab Access Token
@@ -47,11 +62,7 @@ $ sudo apt-get install libav-tools
 export GENIUS_LYRICS_KEY=YOUR KEY 
 ```
 
-<img src="https://s29.postimg.org/k4ga1gmsn/Genius_API.png" width="543px" height="362px" />
-<br>
-
-
-##### Fetch image search API keys from [Microsoft.com](https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api)
+### [Bing Search API](https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api)
 
 1. Create an account
 2. Grab Access Token
@@ -61,33 +72,29 @@ export GENIUS_LYRICS_KEY=YOUR KEY
 export BING_IMG_KEY=YOUR KEY 
 ```
 
-<img src="https://s29.postimg.org/yibo1if7r/Bing_Key.png" width="1150px" height="210px" />
-<br>
-----
+## Installation
 
-### Installation
-
-##### Python 2.x
+### PyPI
 ```sh
 $ pip install musicnow
 ```
 
-##### Python 3.x
+### Source
 ```sh
-$ pip3 install musicnow
+$ git clone https://github.com/lakshaykalbhor/MusicNow
+$ cd MusicNow
+$ python setup.py install
 ```
-<br>
-----
-### How to use
+
+## Usage
+
 ```sh
 $ musicnow
 ```
-(Added new feature not present in video that downloads entire albums, ```musicnow --album```)
+
 [![Usage](https://s30.postimg.org/6a34gq4m9/image.png)](https://www.youtube.com/watch?v=qtBTKUyWTgc "MusicNow - Usage")
 
-<br>
-----
-### Options 
+### Options
 ```
 $ musicnow --help
 
@@ -101,14 +108,16 @@ optional arguments:
   -a, --auto            Automatically chooses top result
   --album               Downloads all songs from an album
 ```
-<br>
-----
-### Disclaimer
+
+## Disclaimer
 Use at own risk.
 Downloading music with copyrights might be illegal in your country.
 
-License
-----
-The MIT License (MIT)
-Copyright (c) 2016 Lakshay Kalbhor
+## Contribute
 
+Found an issue? Post it in the [issue tracker](https://github.com/lakshaykalbhor/MusicRepair/issues). <br> 
+Want to add another awesome feature? [Fork](https://github.com/lakshaykalbhor/MusicRepair/fork) this repository and add your feature, then send a pull request.
+
+## License
+The MIT License (MIT)
+Copyright (c) 2017 Lakshay Kalbhor
