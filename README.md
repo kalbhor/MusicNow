@@ -1,6 +1,6 @@
 <img src="https://s24.postimg.org/s14nonos5/Music_Repair_GIF.gif" width="700px" height="300px" />
 
-# MusicRepair
+# MusicNow
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
@@ -115,8 +115,8 @@ Downloading music with copyrights might be illegal in your country.
 
 ## Contribute
 
-Found an issue? Post it in the [issue tracker](https://github.com/lakshaykalbhor/MusicRepair/issues). <br> 
-Want to add another awesome feature? [Fork](https://github.com/lakshaykalbhor/MusicRepair/fork) this repository and add your feature, then send a pull request.
+Found an issue? Post it in the [issue tracker](https://github.com/lakshaykalbhor/MusicNow/issues). <br> 
+Want to add another awesome feature? [Fork](https://github.com/lakshaykalbhor/MusicNow/fork) this repository and add your feature, then send a pull request.
 
 ## License
 The MIT License (MIT)
