@@ -51,6 +51,7 @@ $ sudo apt-get install libav-tools
 
 ### Windows
 [Install libav](https://github.com/NixOS/nixpkgs/issues/5236)
+[Check this for utf-8 errors](https://github.com/lakshaykalbhor/MusicRepair/issues/26)
 
 ### [Genius API](https://genius.com/api-clients)
 
