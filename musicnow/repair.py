@@ -5,13 +5,20 @@ Tries to find the metadata of songs based on the file name
 https://github.com/lakshaykalbhor/MusicRepair
 '''
 
-from . import albumsearch
-from . import improvename
-from . import log
+try:
+    from . import albumsearch
+    from . import improvename
+    from . import log
+except:
+    import albumsearch
+    import improvename
+    import log
 
 from os import rename, environ
+from os.path import realpath, basename
 import difflib
 import six
+import configparser
 
 from bs4 import BeautifulSoup
 
@@ -30,14 +37,24 @@ elif six.PY3:
     from urllib.request import urlopen
     Py3 = True
 
-LOG_LINE_SEPERATOR = '........................\n'
-
-try:
-    GENIUS_KEY = environ['GENIUS_LYRICS_KEY']
-except KeyError:
-    log.log_error('Warning, GENIUS_LYRICS_KEY not added in environment variables')
 
 
+def setup():
+    """
+    Gathers all configs
+    """
+
+    global CONFIG, BING_KEY, GENIUS_KEY, config_path, LOG_FILENAME, LOG_LINE_SEPERATOR 
+
+    LOG_FILENAME = 'musicrepair_log.txt'
+    LOG_LINE_SEPERATOR = '........................\n'
+
+    CONFIG = configparser.ConfigParser()
+    config_path = realpath(__file__).replace(basename(__file__),'')
+    config_path = config_path + 'config.ini'
+    CONFIG.read(config_path)
+
+    GENIUS_KEY = CONFIG['keys']['genius_key']
 
 
 def matching_details(song_name, song_title, artist):
@@ -269,6 +286,8 @@ def fix_music(file_name):
     Searches for '.mp3' files in directory (optionally recursive)
     and checks whether they already contain album art and album name tags or not.
     '''
+
+    setup()
 
     if not Py3:
         file_name = file_name.encode('utf-8')

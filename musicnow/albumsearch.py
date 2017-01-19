@@ -1,14 +1,17 @@
 '''
 Return Album Art url
 '''
-from . import log
+try:
+    from . import log
+except:
+    import log
 
 import requests
 import json
 from bs4 import BeautifulSoup
 import six
 from os import environ
-
+from os.path import realpath, basename
 
 if six.PY2:
     from urllib2 import urlopen, Request
@@ -18,13 +21,28 @@ elif six.PY3:
     from urllib.request import urlopen, Request
 
 
-try:
-    BING_KEY = environ['BING_IMG_KEY']
-except KeyError:
-    log.log_error('Warning, BING_IMG_KEY not added in environment variables')
+def setup():
+    """
+    Gathers all configs
+    """
+
+    global CONFIG, BING_KEY, GENIUS_KEY, config_path, LOG_FILENAME, LOG_LINE_SEPERATOR 
+
+    LOG_FILENAME = 'musicrepair_log.txt'
+    LOG_LINE_SEPERATOR = '........................\n'
+
+    CONFIG = configparser.ConfigParser()
+    config_path = realpath(__file__).replace(basename(__file__),'')
+    config_path = config_path + 'config.ini'
+    CONFIG.read(config_path)
+
+    BING_KEY = CONFIG['keys']['bing_key']
+
 
 def img_search_bing(album):
     ''' Bing image search '''
+
+    setup()
 
     album = album + " Album Art"
 

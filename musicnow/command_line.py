@@ -9,12 +9,17 @@ r"""
                                               
 """
 
-from . import repair
-from . import log
+try:
+    from . import repair
+    from . import log
+except:
+    import repair
+    import log
 
 import argparse
+import configparser
 from os import system, rename, listdir, curdir, name
-from os.path import basename
+from os.path import basename, realpath
 from collections import OrderedDict
 import re
 
@@ -35,6 +40,44 @@ elif six.PY3:
 
 YOUTUBECLASS = 'spf-prefetch'
 
+def setup():
+    """
+    Gathers all configs
+    """
+
+    global CONFIG, BING_KEY, GENIUS_KEY, config_path, LOG_FILENAME, LOG_LINE_SEPERATOR 
+
+    LOG_FILENAME = 'musicrepair_log.txt'
+    LOG_LINE_SEPERATOR = '........................\n'
+
+    CONFIG = configparser.ConfigParser()
+    config_path = realpath(__file__).replace(basename(__file__),'')
+    config_path = config_path + 'config.ini'
+    CONFIG.read(config_path)
+
+    GENIUS_KEY = CONFIG['keys']['genius_key']
+    BING_KEY = CONFIG['keys']['bing_key']
+
+    if GENIUS_KEY == '<insert genius key here>':
+        log.log_error('Warning, you are missing the Genius key. Add it using --config')
+
+    if BING_KEY == '<insert bing key here>':
+        log.log_error('Warning, you are missing the Bing key. Add it using --config')
+
+def add_config():
+    """
+    Prompts user for API keys, adds them in an .ini file stored in the same
+    location as that of the script
+    """
+
+    genius_key = input('Enter Genius key : ')
+    bing_key = input('Enter Bing key : ')
+
+    CONFIG['keys']['bing_key'] = bing_key
+    CONFIG['keys']['genius_key'] = genius_key
+
+    with open(config_path, 'w') as configfile:
+        CONFIG.write(configfile)
 
 
 def get_tracks_from_album(album_name):
@@ -154,8 +197,12 @@ def main():
 
     system('clear')
 
+    setup()
+
     parser = argparse.ArgumentParser(
         description='Download songs with album art and metadata!')
+    parser.add_argument('-c', '--config', action='store_true',
+                        help='Set your API keys')
     parser.add_argument('-m', '--multiple', action='store', dest='multiple_file',
                         help='Download multiple songs from a text file list')
     parser.add_argument('-a', '--auto', action='store_true',
@@ -166,8 +213,13 @@ def main():
     arg_multiple = args.multiple_file or None
     arg_auto = args.auto or None
     arg_album = args.album or None
+    arg_config = args.config
 
-    if arg_multiple and arg_album:
+
+    if arg_config:
+        add_config()
+
+    elif arg_multiple and arg_album:
         log.log_error("Can't do both!")
 
     elif arg_album:
