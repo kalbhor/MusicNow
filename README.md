@@ -98,14 +98,15 @@ $ musicnow
 ### Options
 ```
 $ musicnow --help
-
-usage: musicnow [-h] [-m MULTIPLE_FILE] [-a] [--album]
+usage: musicnow [-h] [-c] [-m MULTIPLE_FILE] [-a] [--album]
 
 Download songs with album art and metadata!
 
 optional arguments:
   -h, --help            show this help message and exit
-  -m                    Download multiple songs from a text file list
+  -c, --config          Set your API keys
+  -m MULTIPLE_FILE, --multiple MULTIPLE_FILE
+                        Download multiple songs from a text file list
   -a, --auto            Automatically chooses top result
   --album               Downloads all songs from an album
 ```
