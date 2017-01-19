@@ -51,26 +51,26 @@ $ sudo apt-get install libav-tools
 
 ### Windows
 [Install libav](https://github.com/NixOS/nixpkgs/issues/5236)
+
 [Check this for utf-8 errors](https://github.com/lakshaykalbhor/MusicRepair/issues/26)
 
 ### [Genius API](https://genius.com/api-clients)
 
 1. Create an account and register an application 
 2. Grab Access Token
-3. Set environment variable in your bashrc/zshrc file
-
-```sh 
-export GENIUS_LYRICS_KEY=YOUR KEY 
-```
+3. Set access token in config file
 
 ### [Bing Search API](https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api)
 
 1. Create an account
 2. Grab Access Token
-3. Set environment variable in your bashrc/zshrc file
+3. Set access token in config file
 
-```sh
-export BING_IMG_KEY=YOUR KEY 
+```sh 
+$ musicnow --config                                               
+     
+Enter Genius key : <enter genius key>                                 
+Enter Bing key : <enter bing key>
 ```
 
 ## Installation
