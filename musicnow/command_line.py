@@ -9,26 +9,25 @@ r"""
                                               
 """
 
+import argparse
+import configparser
+import re
+import requests
+import youtube_dl
+import spotipy
+import six
+
+from os import system, rename, listdir, curdir, name
+from os.path import basename, realpath
+from collections import OrderedDict
+from bs4 import BeautifulSoup
+
 try:
     from . import repair
     from . import log
 except:
     import repair
     import log
-
-import argparse
-import configparser
-from os import system, rename, listdir, curdir, name
-from os.path import basename, realpath
-from collections import OrderedDict
-import re
-
-from bs4 import BeautifulSoup
-import requests
-import youtube_dl
-import spotipy
-
-import six
 
 if six.PY2:
     from urllib2 import urlopen
@@ -102,9 +101,6 @@ def get_url(song_input, auto):
     Provides user with a list of songs to choose from
     returns the url of chosen song.
     '''
-
-    print('\n')
-
     youtube_list = OrderedDict()
     num = 0  # List of songs index
 
@@ -195,7 +191,7 @@ def main():
     Starts here, handles arguments
     '''
 
-    system('clear')
+    system('clear') # Must be system('cls') for windows
 
     setup()
 
@@ -272,4 +268,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main() 
