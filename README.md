@@ -11,8 +11,8 @@
 
 ## Social:
 
-[![GitHub stars](https://img.shields.io/github/stars/lakshaykalbhor/musicnow.svg?style=social&label=Star)](https://github.com/lakshaykalbhor/musicnow)
-[![GitHub followers](https://img.shields.io/github/followers/lakshaykalbhor.svg?style=social&label=Follow)](https://github.com/lakshaykalbhor)  
+[![GitHub stars](https://img.shields.io/github/stars/kalbhor/musicnow.svg?style=social&label=Star)](https://github.com/kalbhor/musicnow)
+[![GitHub followers](https://img.shields.io/github/followers/kalbhor.svg?style=social&label=Follow)](https://github.com/kalbhor)  
 [![Twitter Follow](https://img.shields.io/twitter/follow/lakshaykalbhor.svg?style=social)](https://twitter.com/lakshaykalbhor)
 
 
@@ -54,7 +54,7 @@ $ sudo apt-get install libav-tools
 ### Windows
 [Install libav](https://github.com/NixOS/nixpkgs/issues/5236)
 
-[Check this for utf-8 errors](https://github.com/lakshaykalbhor/MusicRepair/issues/26)
+[Check this for utf-8 errors](https://github.com/kalbhor/MusicRepair/issues/26)
 
 ### [Genius API](https://genius.com/api-clients)
 
@@ -84,7 +84,7 @@ $ pip install musicnow
 
 ### Source
 ```sh
-$ git clone https://github.com/lakshaykalbhor/MusicNow
+$ git clone https://github.com/kalbhor/MusicNow
 $ cd MusicNow
 $ python setup.py install
 ```
@@ -119,8 +119,8 @@ Downloading music with copyrights might be illegal in your country.
 
 ## Contribute
 
-Found an issue? Post it in the [issue tracker](https://github.com/lakshaykalbhor/MusicNow/issues). <br> 
-Want to add another awesome feature? [Fork](https://github.com/lakshaykalbhor/MusicNow/fork) this repository and add your feature, then send a pull request.
+Found an issue? Post it in the [issue tracker](https://github.com/kalbhor/MusicNow/issues). <br> 
+Want to add another awesome feature? [Fork](https://github.com/kalbhor/MusicNow/fork) this repository and add your feature, then send a pull request.
 
 ## License
 The MIT License (MIT)
