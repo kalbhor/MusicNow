@@ -7,7 +7,7 @@
 
 > MusicNow is a python script that downloads music and albums with important tags such as : album name, artist name, lyrics and album art.
 
-**You can now download songs online with metadata at MusicNow's [website](https://musicnow.herokuapp.com) (This is experimental and currently in development)**
+**You can now download songs online with metadata at [MusicSeize.com](https://musicseize.com)**
 
 ## Social:
 
